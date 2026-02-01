@@ -1,4 +1,11 @@
 /*
+select lekcija
+
+
+
+
+
+
 
 Dobrodosao slideshow i login-endgoal
 */
@@ -25,7 +32,7 @@ const routes = [
 
     route("/shop", "./pages/Shop.tsx"),
 
-    route("/test/:tip/:id", "./pages/Test.tsx"),
+    route("/test/:tip/:id/:method", "./pages/Test.tsx"),
     route("/results/:id", "./pages/Results.tsx"),
 
     route("/faq", "./pages/FAQ.tsx"),
