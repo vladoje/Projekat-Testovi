@@ -1,11 +1,4 @@
 /*
-select lekcija
-
-
-
-
-
-
 
 Dobrodosao slideshow i login-endgoal
 */

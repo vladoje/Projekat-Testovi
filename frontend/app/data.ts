@@ -1,7 +1,14 @@
+import { getBrCategory, getBrPitanja, getCategory } from "./helpers";
+
 export type cat = {
   label: string;
   opis: string;
   testText: string;
+};
+export type lekcija = {
+  label: string;
+  opis: string;
+  testText: (a: string, b?: string) => string;
 };
 export const categorije: cat[] = [
   {
@@ -42,26 +49,42 @@ export const categorije: cat[] = [
   },
 ];
 //dinamicni test Text
-export const lekcije: cat[] = [
+export const lekcije: lekcija[] = [
   {
     label: "Suva pitanja",
     opis: "Suva pitanja iz propisa za sve kategorije",
-    testText:
-      "Propisi za () kategoriju se sastoje od () pitanja podijeljenih na () kategorija",
+    testText: (a, b) => {
+      const cat = getCategory(b || "");
+      const brPitanja = getBrPitanja(a, b);
+      const brKategorija = getBrCategory(a, b);
+      return `Propisi za ${cat} kategoriju se sastoje od ${brPitanja} pitanja podijeljenih na ${brKategorija} kategorija`;
+    },
   },
   {
     label: "Znakovi",
     opis: "Pitanja oko znakova za sve kategorije",
-    testText: "",
+    testText: (a) => {
+      const brPitanja = getBrPitanja(a);
+      const brKategorija = getBrCategory(a);
+      return `Znakovi se sastoje od ${brPitanja} pitanja podijeljenih na ${brKategorija} kategorija`;
+    },
   },
   {
     label: "Raskrsnice",
     opis: "Pitanja oko raskrsnica za sve kategorije",
-    testText: "",
+    testText: (a) => {
+      const brPitanja = getBrPitanja(a);
+      const brKategorija = getBrCategory(a);
+      return `Raskrsnice se sastoje od ${brPitanja} pitanja podijeljenih na ${brKategorija} kategorija`;
+    },
   },
   {
     label: "Prva pomoc",
     opis: "Pitanja oko prve pomoci",
-    testText: "",
+    testText: (a) => {
+      const brPitanja = getBrPitanja(a);
+      const brKategorija = getBrCategory(a);
+      return `Pitanja iz prve pomoci se sastoje od ${brPitanja} pitanja podijeljenih na ${brKategorija} kategorija`;
+    },
   },
 ];
