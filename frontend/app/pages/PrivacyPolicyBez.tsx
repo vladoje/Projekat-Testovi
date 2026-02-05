@@ -1,11 +1,8 @@
-import Header from "~/components/Header";
 import { FaShieldHalved, FaLock, FaEnvelope } from "react-icons/fa6";
 
 function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f172a] pb-20">
-      <Header />
-
       <main className="max-w-md mx-auto px-6 pt-10">
         {/* HEADER SEKCIJA */}
         <div className="flex flex-col items-center mb-10">

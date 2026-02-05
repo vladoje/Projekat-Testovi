@@ -1,10 +1,13 @@
+import { useEffect } from "react";
 import { Link } from "react-router";
 import Header from "~/components/Header";
 import { categorije, lekcije } from "~/data";
+import { useRjesenja } from "~/store";
 
 export default function UserDashboard() {
   const name = "Vladimir";
-
+  const resetState = useRjesenja().resetState;
+  useEffect(() => resetState(), []);
   return (
     <div className="w-full min-h-screen bg-slate-50">
       <Header />

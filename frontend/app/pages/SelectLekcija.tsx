@@ -86,7 +86,7 @@ function SelectLekcija() {
         {/* OPCIJE */}
         <div className="space-y-4">
           <Link
-            to={`/test/categorija/${prvaPomoc ? "P" : category}/test`}
+            to={`/test/lekcija/${prvaPomoc ? "P" : category}/test`}
             className="block p-5 bg-slate-900 dark:bg-indigo-600 rounded-3xl shadow-lg active:scale-[0.97] transition-all"
           >
             <div className="flex items-center gap-4">
@@ -103,7 +103,7 @@ function SelectLekcija() {
           </Link>
 
           <Link
-            to={`/test/categorija/${prvaPomoc ? "P" : category}/ucenje`}
+            to={`/test/lekcija/${prvaPomoc ? "P" : category}/ucenje`}
             className="block p-5 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-3xl active:scale-[0.97] transition-all"
           >
             <div className="flex items-center gap-4">
