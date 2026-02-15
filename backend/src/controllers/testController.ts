@@ -2,33 +2,53 @@ import { query } from "../db/db";
 import { Request, Response } from "express";
 import { selectPitanja } from "../utils/generateTest";
 import { handleResult } from "../utils/handleResult";
+import { pitanjeDB } from "../utils/testHelpers";
 
 export async function generateTest(req: Request, res: Response) {
   try {
     const userId = (req as any).userId;
-    const category: string = (
-      await query("SELECT category FROM users WHERE id=$1", [userId])
-    ).rows[0];
-    const rijesioTestova: number = (
-      await query("SELECT rijesio_testova FROM users WHERE id=$1", [userId])
-    ).rows[0];
 
-    const result = await query(
-      `SELECT * FROM question_progress 
-   WHERE user_id = $1 AND question_type IN ('pitanje', 'znak', 'raskrsnica')`,
+    const userResult = await query(
+      "SELECT category, rijesio_testova FROM users WHERE id=$1",
       [userId],
     );
 
-    const suvaPitanjaKorisnika = result.rows.filter(
-      (r) => r.question_type === "pitanje",
+    if (userResult.rowCount === 0) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    const { category, rijesio_testova: rijesioTestova } = userResult.rows[0];
+
+    const result = await query(
+      `SELECT * FROM question_progress 
+   WHERE user_id = $1 `,
+      [userId],
     );
-    const znakoviKorisnika = result.rows.filter(
-      (r) => r.question_type === "znak",
-    );
-    const raskrsniceKorisnika = result.rows.filter(
-      (r) => r.question_type === "raskrsnica",
-    );
-    const test = [];
+    if (!result.rows)
+      return res
+        .status(404)
+        .send({ message: "User doesnt have any test-s in DB " }); //nebi se trebalo desiti
+
+    const suvaPitanjaKorisnika: pitanjeDB[] = [];
+    const znakoviKorisnika: pitanjeDB[] = [];
+    const raskrsniceKorisnika: pitanjeDB[] = [];
+    result.rows.map((r) => {
+      if (r.question_categories.includes(category)) {
+        switch (r.question_type) {
+          case "znak":
+            znakoviKorisnika.push(r);
+            break;
+          case "raskrsnica":
+            raskrsniceKorisnika.push(r);
+            break;
+          case "pitanje":
+            suvaPitanjaKorisnika.push(r);
+            break;
+        }
+      }
+    });
+
+    const test: { question_id: number }[] = [];
     test.push(
       ...selectPitanja(
         suvaPitanjaKorisnika,
@@ -36,6 +56,7 @@ export async function generateTest(req: Request, res: Response) {
         rijesioTestova,
       ),
     );
+
     test.push(...selectPitanja(znakoviKorisnika, 10, rijesioTestova));
     test.push(...selectPitanja(raskrsniceKorisnika, 10, rijesioTestova));
     return res.send({ message: "Success", test });
@@ -44,10 +65,57 @@ export async function generateTest(req: Request, res: Response) {
     return res.status(500).send({ message: "Internal server error" });
   }
 }
+const allowedTypes = ["pitanje", "znak", "raskrsnica"];
+export async function generateOneTypeTest(req: Request, res: Response) {
+  try {
+    const userId = (req as any).userId;
+    let type = req.params.type;
+    if (Array.isArray(type)) type = type[0];
 
+    if (!allowedTypes.includes(type)) {
+      return res.status(400).send({ message: "Invalid test type" });
+    }
+
+    const userResult = await query(
+      "SELECT category, rijesio_testova FROM users WHERE id=$1",
+      [userId],
+    );
+
+    if (userResult.rowCount === 0) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    const { category, rijesio_testova: rijesioTestova } = userResult.rows[0];
+
+    const result = await query(
+      `
+  SELECT *
+  FROM question_progress
+  WHERE user_id = $1
+    AND question_type = $2
+   AND question_categories LIKE '%' || $3 || '%'
+  `,
+      [userId, type, category],
+    );
+    if (!result.rows)
+      return res
+        .status(404)
+        .send({ message: "User doesnt have any test-s in DB " }); //nebi se trebalo desiti
+
+    const pitanjaKorisnika = result.rows.filter((r) => {
+      return r.question_categories.includes(category);
+    });
+
+    const test = [...selectPitanja(pitanjaKorisnika, 20, rijesioTestova)];
+
+    return res.send({ message: "Success", test });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send({ message: "Internal server error" });
+  }
+}
 interface results {
   question_id: number;
-  question_type: string;
   answer: boolean;
 }
 // question: pitanjeDB,
@@ -58,7 +126,7 @@ export async function handleResults(req: Request, res: Response) {
   await query("BEGIN");
   try {
     const userId = (req as any).userId;
-    const results: results[] = req.body;
+    const { results }: { results: results[] } = req.body;
     if (!results) {
       return res.status(400).send("Invalid body");
     }
@@ -71,7 +139,6 @@ export async function handleResults(req: Request, res: Response) {
 
     const testNumber = rijesio_testova;
     const questionIdsInput = results.map((r) => r.question_id);
-    const questionTypesInput = results.map((r) => r.question_type);
 
     const { rows: questions } = await query(
       `
@@ -79,18 +146,16 @@ export async function handleResults(req: Request, res: Response) {
       FROM question_progress
       WHERE user_id = $1
         AND question_id = ANY($2)
-        AND question_type = ANY($3)
       `,
-      [userId, questionIdsInput, questionTypesInput],
+      [userId, questionIdsInput],
     );
 
-    const resultsMap = new Map(
-      results.map((r) => [`${r.question_id}-${r.question_type}`, r.answer]),
-    );
-
+    if (questions.length !== results.length) {
+      return res.status(400).send("Nesto ne valja");
+    }
+    const resultsMap = new Map(results.map((r) => [r.question_id, r.answer]));
     const updatedQuestions = questions.map((q) => {
-      const answer =
-        resultsMap.get(`${q.question_id}-${q.question_type}`) || false;
+      const answer = resultsMap.get(q.question_id) || false;
       return handleResult(q, answer, testNumber);
     });
 
@@ -107,21 +172,19 @@ export async function handleResults(req: Request, res: Response) {
         FROM (
           SELECT
             unnest($1::int[]) AS question_id,
-            unnest($2::text[]) AS question_type, 
-            unnest($3::int[]) AS times_seen,     
-            unnest($4::int[]) AS last_seen_at,   
-            unnest($5::boolean[]) AS last_result,
-            unnest($6::int[]) AS consecutive_correct,
-            unnest($7::int[]) AS recommended_until
+            unnest($2::int[]) AS times_seen,     
+            unnest($3::int[]) AS last_seen_at,   
+            unnest($4::boolean[]) AS last_result,
+            unnest($5::int[]) AS consecutive_correct,
+            unnest($6::int[]) AS recommended_until
         ) AS data
         WHERE
-          qp.user_id = $8
+          qp.user_id = $7
           AND qp.question_id = data.question_id
-          AND qp.question_type = data.question_type
+          
         `,
         [
           updatedQuestions.map((q) => q.question_id),
-          updatedQuestions.map((q) => q.question_type),
           updatedQuestions.map((q) => q.times_seen),
           updatedQuestions.map((q) => q.last_seen_at),
           updatedQuestions.map((q) => q.last_result),

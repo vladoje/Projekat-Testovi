@@ -25,5 +25,6 @@ export function handleResult(
     editedQ.recommended_until = testNumber + 2;
     editedQ.consecutive_correct = 0;
   }
+
   return editedQ;
 }

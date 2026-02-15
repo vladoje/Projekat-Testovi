@@ -1,30 +1,7 @@
-import fs from "fs";
-import path from "path";
+import { query } from "../db/db";
 
-const znakoviP = path.join(`${__dirname}/../../data`, "znakovi.json");
-const raskrsniceP = path.join(`${__dirname}/../../data`, "raskrsnice.json");
-const pitanjaP = path.join(`${__dirname}/../../data`, "suva_pitanja.json");
-
-const rawZnakovi = fs.readFileSync(znakoviP, "utf-8");
-const rawRaskrsnice = fs.readFileSync(raskrsniceP, "utf-8");
-const rawPitanja = fs.readFileSync(pitanjaP, "utf-8");
-
-const znakovi: znak[] = JSON.parse(rawZnakovi);
-const raskrsnice: znak[] = JSON.parse(rawRaskrsnice);
-const pitanja: suvo[] = JSON.parse(rawPitanja);
-
-interface znak {
-  index: number;
-  question_text: string;
-  answer_1_text: string;
-  answer_2_text: string;
-  answer_3_text?: string;
-  answer_4_text?: string;
-  correct_answer: number[];
-  type: string;
-}
 interface suvo {
-  index: number;
+  question_id: number;
   question_text: string;
   answer_1_text: string;
   answer_2_text: string;
@@ -32,7 +9,22 @@ interface suvo {
   answer_4_text?: string;
   answer_5_text?: string;
   correct_answer: number[];
-  categories: string[];
+  categories: string;
   type: string;
 }
-export default async function generateStarterProgress() {}
+
+interface tipIID {
+  question_id: number;
+  type: string;
+}
+export default async function generateStarterProgress(user_id: number) {
+  await query(
+    `
+    INSERT INTO question_progress
+      (user_id, question_id, recommended_until, consecutive_correct, last_seen_at, question_type, times_seen, last_result,question_categories)
+    SELECT $1, question_id, 0, 0, 0, type, 0, false,categories
+    FROM questions
+    `,
+    [user_id],
+  );
+}

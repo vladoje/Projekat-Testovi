@@ -9,10 +9,9 @@ export interface pitanjeDB {
   question_id: number;
   user_id: number;
   question_type: string;
-
+  question_categories: string;
   recommended_until: number;
   last_seen_at: number;
-
   times_seen: number;
   last_result: boolean;
   consecutive_correct: number;

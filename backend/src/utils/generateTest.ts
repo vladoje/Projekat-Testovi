@@ -11,6 +11,7 @@ export function selectPitanja(
   const konacniTest: pitanjeDB[] = [];
 
   const dodajUTest: (p: pitanjeDB) => boolean = (p: pitanjeDB) => {
+    console.log(p);
     if (p && konacniTest.length < broj && !testIds.has(p.question_id)) {
       testIds.add(p.question_id);
       konacniTest.push(p);
@@ -29,9 +30,9 @@ export function selectPitanja(
     broj,
     dodajUTest,
   );
+
   return shuffle(konacniTest).map((p) => ({
     question_id: p.question_id,
-    question_type: p.question_type,
   }));
 }
 
@@ -65,6 +66,7 @@ function weightQuestions(
     }
 
     const picked = weightPitanja.splice(index, 1)[0];
+
     dodajUTest(picked);
   }
 }

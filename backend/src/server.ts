@@ -4,6 +4,8 @@ import express, { Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import { query } from "./db/db";
 import authRoutes from "./routes/auth";
+import testRoutes from "./routes/test";
+import userRoutes from "./routes/user";
 import { authenticate } from "./middleware/authMidleware";
 
 // Load .env
@@ -17,18 +19,9 @@ app.use(cookieParser());
 
 // Routes
 app.use("/auth", authRoutes);
+app.use("/test", authenticate, testRoutes);
+app.use("/user", authenticate, userRoutes);
 
-// Health check
-app.get("/health", (req: Request, res: Response) => {
-  res.json({ status: "OK" });
-});
-
-// Example protected route
-app.get("/protected", authenticate, (req: Request, res: Response) => {
-  res.send({ message: "You are logged in!", userId: (req as any).userId });
-});
-
-// Start server with DB connection check
 const startServer = async () => {
   try {
     await query("SELECT 1"); // test connection

@@ -13,6 +13,7 @@ import { query } from "../db/db";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import isEmail from "validator/lib/isEmail";
+import generateStarterProgress from "../utils/starterProgress";
 export async function login(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
@@ -59,10 +60,12 @@ export async function register(req: Request, res: Response) {
       [username, email, passwordHash, category],
     );
     const createdUser: User = newUser.rows[0];
+    if (!createdUser) return res.status(401).send("DB didnt create a new user");
     const payload = { userId: createdUser.id };
     const token = jwt.sign(payload, process.env.JWT_SECRET!, {
       expiresIn: "90d",
     });
+    await generateStarterProgress(createdUser.id);
     res.cookie("token", token, { httpOnly: true });
     res.send({ message: "Register succesfull" });
   } catch (e) {
@@ -134,6 +137,7 @@ export async function resetPassword(req: Request, res: Response) {
   if (!result.rows[0]) return res.status(400).send("Invalid or expired token");
   //nabavi userId
   const userId = result.rows[0].user_id;
+  if (!userId) return res.status(400).send("Invalid or expired token");
   await query("UPDATE users SET password_hash=$1 WHERE id=$2", [
     hashedPassword,
     userId,
