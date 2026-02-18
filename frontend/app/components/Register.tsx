@@ -1,7 +1,41 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Input from "./Input";
+import { useState } from "react";
+import { useUser } from "~/userStore";
 
 export default function Register() {
+  const navigate = useNavigate();
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password2, setPassword2] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [category, setCategory] = useState<string>("B");
+  async function handleClick() {
+    if (password !== password2) return;
+    const loginRes = await fetch("http://127.0.0.1:5000/auth/register", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password, username: name, category }),
+    });
+
+    if (!loginRes.ok) {
+      // handle error
+      return;
+    }
+
+    // 👇 sada pitamo backend: ko sam ja?
+    const meRes = await fetch("http://127.0.0.1:5000/user/me", {
+      credentials: "include",
+    });
+
+    const user = await meRes.json();
+
+    useUser.getState().setUser(user); // AuthContext
+    navigate("/");
+  }
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col justify-center px-6 py-12">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
@@ -19,25 +53,25 @@ export default function Register() {
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2">
               Puno ime
             </label>
-            <Input placeholder="Marko Marković" />
+            <Input state={name} setState={setName} />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2">
               E-mail
             </label>
-            <Input type="email" placeholder="someone@example.com" />
+            <Input type="email" state={email} setState={setEmail} />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2">
               Lozinka
             </label>
-            <Input type="password" placeholder="●●●●●●●●" />
+            <Input type="password" state={password} setState={setPassword} />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2">
               Ponovite lozinku
             </label>
-            <Input type="password" placeholder="●●●●●●●●" />
+            <Input type="password" state={password2} setState={setPassword2} />
           </div>
 
           <div className="flex items-start px-1 py-2">
@@ -57,7 +91,10 @@ export default function Register() {
             </p>
           </div>
 
-          <button className="w-full flex justify-center py-4 px-4 border border-transparent rounded-2xl shadow-lg shadow-indigo-200 text-sm font-black text-white bg-indigo-600 hover:bg-indigo-700 transition-all active:scale-95">
+          <button
+            onClick={handleClick}
+            className="w-full flex justify-center py-4 px-4 border border-transparent rounded-2xl shadow-lg shadow-indigo-200 text-sm font-black text-white bg-indigo-600 hover:bg-indigo-700 transition-all active:scale-95"
+          >
             Napravite nalog
           </button>
         </div>

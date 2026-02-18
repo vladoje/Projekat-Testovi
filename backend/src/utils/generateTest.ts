@@ -11,7 +11,6 @@ export function selectPitanja(
   const konacniTest: pitanjeDB[] = [];
 
   const dodajUTest: (p: pitanjeDB) => boolean = (p: pitanjeDB) => {
-    console.log(p);
     if (p && konacniTest.length < broj && !testIds.has(p.question_id)) {
       testIds.add(p.question_id);
       konacniTest.push(p);

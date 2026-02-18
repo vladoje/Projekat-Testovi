@@ -1,24 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-export interface JwtPayload {
-  userId: number;
-}
+export function authMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const token = req.cookies.token; // cookie-parser mora biti uključen
 
-export function authenticate(req: Request, res: Response, next: NextFunction) {
+  if (!token) return res.status(401).send({ message: "Unauthorized" });
+
   try {
-    const token = req.cookies.token;
-    if (!token) return res.status(401).send("Unauthorized");
-
-    if (!process.env.JWT_SECRET) throw new Error("JWT_SECRET not defined");
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
-    // dodamo userId u req objekt da kontroleri mogu koristiti
-    (req as any).userId = decoded.userId;
-
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    (req as any).userId = payload.userId;
     next();
-  } catch (e) {
-    console.error(e);
-    res.status(401).send("Unauthorized");
+  } catch (err) {
+    return res.status(401).send({ message: "Invalid token" });
   }
 }

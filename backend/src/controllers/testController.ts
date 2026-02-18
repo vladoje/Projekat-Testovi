@@ -32,6 +32,7 @@ export async function generateTest(req: Request, res: Response) {
     const suvaPitanjaKorisnika: pitanjeDB[] = [];
     const znakoviKorisnika: pitanjeDB[] = [];
     const raskrsniceKorisnika: pitanjeDB[] = [];
+
     result.rows.map((r) => {
       if (r.question_categories.includes(category)) {
         switch (r.question_type) {
@@ -48,7 +49,7 @@ export async function generateTest(req: Request, res: Response) {
       }
     });
 
-    const test: { question_id: number }[] = [];
+    const test = [];
     test.push(
       ...selectPitanja(
         suvaPitanjaKorisnika,
@@ -59,12 +60,38 @@ export async function generateTest(req: Request, res: Response) {
 
     test.push(...selectPitanja(znakoviKorisnika, 10, rijesioTestova));
     test.push(...selectPitanja(raskrsniceKorisnika, 10, rijesioTestova));
-    return res.send({ message: "Success", test });
+    // test=[{question_id:number}] json
+    const testIds = test.map((t) => t.question_id);
+
+    const pitanja = (
+      await query(
+        "SELECT *\
+   FROM questions\
+   WHERE question_id = ANY($1)",
+        [testIds],
+      )
+    ).rows;
+
+    return res.send({ message: "Success", pitanja, duzina: pitanja.length });
   } catch (err) {
     console.error(err);
     return res.status(500).send({ message: "Internal server error" });
   }
 }
+//
+//
+//
+//
+
+//
+//
+//
+//
+
+//
+//
+//
+//
 const allowedTypes = ["pitanje", "znak", "raskrsnica"];
 export async function generateOneTypeTest(req: Request, res: Response) {
   try {
@@ -107,13 +134,23 @@ export async function generateOneTypeTest(req: Request, res: Response) {
     });
 
     const test = [...selectPitanja(pitanjaKorisnika, 20, rijesioTestova)];
+    const testIds = test.map((t) => t.question_id);
+    const pitanja = (
+      await query(
+        "SELECT *\
+   FROM questions\
+   WHERE question_id = ANY($1)",
+        [testIds],
+      )
+    ).rows;
 
-    return res.send({ message: "Success", test });
+    return res.send({ message: "Success", pitanja, duzina: pitanja.length });
   } catch (err) {
     console.error(err);
     return res.status(500).send({ message: "Internal server error" });
   }
 }
+
 interface results {
   question_id: number;
   answer: boolean;

@@ -1,10 +1,11 @@
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import Header from "~/components/Header";
+
 import { categorije } from "~/data";
-import Switch from "@mui/material/Switch";
 
 function SelectTest() {
   const location = useLocation();
+
   const category = location.pathname.split("/").at(2);
   const prvaPomoc = category === "P" ? "Prva pomoc" : null;
 
@@ -28,24 +29,6 @@ function SelectTest() {
           <p className="text-slate-500 dark:text-slate-400 mt-3 text-sm leading-relaxed">
             {body?.opis || "Spremite se za polaganje uz zvanična pitanja."}
           </p>
-        </div>
-
-        {/* PAMETNI MOD - Diskretniji dizajn */}
-        <div className="flex items-center justify-between p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm mb-8">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-amber-50 dark:bg-amber-900/20 rounded-full flex items-center justify-center text-xl">
-              🧠
-            </div>
-            <div className="flex flex-col">
-              <span className="font-semibold text-slate-800 dark:text-slate-200 text-sm">
-                Pametno učenje
-              </span>
-              <span className="text-[11px] text-slate-400">
-                Ponavljaj greške
-              </span>
-            </div>
-          </div>
-          <Switch size="small" />
         </div>
 
         {/* KARTICE ZA IZBOR - Indigo/Slate estetika */}

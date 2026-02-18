@@ -31,7 +31,12 @@ export async function login(req: Request, res: Response) {
     const token = jwt.sign(payload, process.env.JWT_SECRET!, {
       expiresIn: "90d",
     });
-    res.cookie("token", token, { httpOnly: true });
+    res.cookie("token", token, {
+      httpOnly: true, // JS ne može da vidi token
+      secure: true, // samo HTTPS
+      sameSite: "none", // cross-site, HTTPS
+      maxAge: 90 * 24 * 60 * 60 * 1000, // 90 dana
+    });
     res.send({ message: "Login succesfull" });
   } catch (e) {
     console.log(e);

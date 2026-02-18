@@ -15,7 +15,6 @@ export interface pitanjeDB {
   times_seen: number;
   last_result: boolean;
   consecutive_correct: number;
-
   created_at: Date;
 }
 

@@ -1,13 +1,13 @@
 import dotenv from "dotenv";
 import path from "path";
-import express, { Request, Response } from "express";
+import express from "express";
 import cookieParser from "cookie-parser";
 import { query } from "./db/db";
 import authRoutes from "./routes/auth";
 import testRoutes from "./routes/test";
 import userRoutes from "./routes/user";
-import { authenticate } from "./middleware/authMidleware";
-
+import { authMiddleware } from "./middleware/authMidleware";
+const cors = require("cors");
 // Load .env
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 const app = express();
@@ -16,11 +16,16 @@ const PORT = process.env.PORT || 5000;
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
-
+app.use(
+  cors({
+    origin: "http://localhost:5173", // origin FE
+    credentials: true, // dozvoljava cookies
+  }),
+);
 // Routes
 app.use("/auth", authRoutes);
-app.use("/test", authenticate, testRoutes);
-app.use("/user", authenticate, userRoutes);
+app.use("/test", authMiddleware, testRoutes);
+app.use("/user", authMiddleware, userRoutes);
 
 const startServer = async () => {
   try {

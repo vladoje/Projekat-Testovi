@@ -2,17 +2,35 @@ function Input({
   type = "text",
   defaultValue,
   placeholder,
+  state,
+  setState,
 }: {
   type?: string;
   defaultValue?: string;
   placeholder?: string;
+  state?: string;
+  setState?: (state: string) => void;
 }) {
+  const stil =
+    "w-full text-base font-medium text-gray-900 border-2 border-gray-200 rounded-2xl py-3.5 px-5 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50/50 outline-none transition-all placeholder:text-gray-300";
+  if (state !== undefined && setState) {
+    return (
+      <input
+        type={type}
+        className={stil}
+        value={state ?? ""}
+        onChange={(e) => {
+          setState?.(e.target.value);
+        }}
+      />
+    );
+  }
   return (
     <input
       type={type}
       defaultValue={defaultValue}
       placeholder={placeholder}
-      className="w-full text-base font-medium border-2 border-gray-200 rounded-2xl py-3.5 px-5 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50/50 outline-none transition-all placeholder:text-gray-300"
+      className={stil}
     />
   );
 }
