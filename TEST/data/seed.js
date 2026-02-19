@@ -17,17 +17,16 @@
 //   const client = await pool.connect();
 
 //   try {
-//     const { rows } = await client.query("SELECT COUNT(*) FROM questions");
+//     // const { rows } = await client.query("SELECT COUNT(*) FROM questions");
 
-//     if (parseInt(rows[0].count) > 0) {
-//       console.log("Pitanja već postoje. Preskačem seed.");
-//       return;
-//     }
+//     // if (parseInt(rows[0].count) > 0) {
+//     //   console.log("Pitanja već postoje. Preskačem seed.");
+//     //   return;
+//     // }
 
-//     const suva = JSON.parse(fs.readFileSync("suva_pitanja.json", "utf-8"));
-//     const znakovi = JSON.parse(fs.readFileSync("znakovi.json", "utf-8"));
-//     const raskrsnice = JSON.parse(fs.readFileSync("raskrsnice.json", "utf-8"));
-//     const data = [...suva, ...znakovi, ...raskrsnice];
+//     const suva = JSON.parse(fs.readFileSync("prva_pomoc.json", "utf-8"));
+
+//     const data = [...suva];
 //     // 3️⃣ Ubacivanje
 //     await client.query("BEGIN");
 //     for (const q of data) {

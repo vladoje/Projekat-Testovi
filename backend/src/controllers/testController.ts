@@ -92,7 +92,7 @@ export async function generateTest(req: Request, res: Response) {
 //
 //
 //
-const allowedTypes = ["pitanje", "znak", "raskrsnica"];
+const allowedTypes = ["pitanje", "znak", "raskrsnica", "pomoc"];
 export async function generateOneTypeTest(req: Request, res: Response) {
   try {
     const userId = (req as any).userId;
@@ -133,7 +133,13 @@ export async function generateOneTypeTest(req: Request, res: Response) {
       return r.question_categories.includes(category);
     });
 
-    const test = [...selectPitanja(pitanjaKorisnika, 20, rijesioTestova)];
+    const test = [
+      ...selectPitanja(
+        pitanjaKorisnika,
+        type === "pomoc" ? 10 : 20,
+        rijesioTestova,
+      ),
+    ];
     const testIds = test.map((t) => t.question_id);
     const pitanja = (
       await query(

@@ -1405,7 +1405,7 @@
   },
   {
     "question_id": 2338,
-    "question_text": "Vozač koji namjerava da na putu, vozilom kojim upravlja, izvrši radnju skretanja udesno smije započeti takvu radnju samo:",
+    "question_text": "Vozač koji namjerava da na putu, vozilom kojim upravlja, izvrši radnju skretanja udesno smije započeti takvu radnju samo: (više tačnih odgovora)",
     "answer_1_text": "ako se prethodno uvjerio da to može učiniti bez opasnosti za druge učesnike u saobraćaju ili imovinu;",
     "answer_2_text": "ako vodi računa o pravcu i brzini kretanja vozila;",
     "answer_3_text": "ako upravlja vozilom sa upaljenim dugim svjetlima.",
@@ -1441,7 +1441,7 @@
   },
   {
     "question_id": 2341,
-    "question_text": "Vozač je dužan da propusti sva vozila koja se kreću putem na koji se uključuje sa vozilom:",
+    "question_text": "Vozač je dužan da propusti sva vozila koja se kreću putem na koji se uključuje sa vozilom: (više tačnih odgovora)",
     "answer_1_text": "ako je put na koji se uključuje označen saobraćajnim znakom kao put sa prvenstvom prolaza;",
     "answer_2_text": "ako se vozilom uključuje sa zemljaniog puta na put sa kolovoznim zastorom;",
     "answer_3_text": "ako se vozilom uključuje sa površine na kojoj se ne odvija saobraćaj;",
@@ -1453,7 +1453,7 @@
   },
   {
     "question_id": 2342,
-    "question_text": "Vozač vozila kome je dat znak za preticanje sa njegove lijeve strane dužan je:",
+    "question_text": "Vozač vozila kome je dat znak za preticanje sa njegove lijeve strane dužan je: (više tačnih odgovora)",
     "answer_1_text": "pomjeriti vozilo ka desnoj ivici kolovoza;",
     "answer_2_text": "ne povećavati brzinu kretanja vozila dok ga drugo vozilo pretiče;",
     "answer_3_text": "odgovoriti zvučnim znakom upozorenja.",

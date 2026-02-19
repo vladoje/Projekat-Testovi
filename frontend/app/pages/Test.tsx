@@ -5,11 +5,12 @@ import Izaberi from "~/components/Izaberi";
 import useTestData, { type pitanje } from "~/hooks/useTestData";
 import useTest from "~/hooks/useTest";
 import { useRjesenja } from "~/store";
+import { useTestStore } from "~/testStore";
 
 function Test() {
   const { i, setI, answers, setAnswers, handleNext } = useTest();
-  const { pitanja, trenutnoPitanje } = useTestData(i);
-
+  const { trenutnoPitanje } = useTestData(i);
+  const pitanja = useTestStore().pitanja;
   const ukiniJedan = useRjesenja().oduzmi;
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">

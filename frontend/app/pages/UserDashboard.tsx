@@ -1,5 +1,16 @@
-import { useUser } from "~/userStore";
+/*
+profile edit
 
+sign up i login rade ali ne najbolje nema indikatora ako nesto ne valja error handling
+
+google auth
+forgot password i reset password
+
+ljepsi UI night mode
+shop
+*/
+
+import { useUser } from "~/userStore";
 import { Link } from "react-router";
 import Header from "~/components/Header";
 import { lekcije } from "~/data";

@@ -1,11 +1,9 @@
-import { useEffect } from "react";
 import { FaCartShopping, FaCheck } from "react-icons/fa6";
 import Header from "~/components/Header";
-import { useRjesenja } from "~/store";
+import { useMe } from "~/helpers/useMe";
 
 function Shop() {
-  const resetState = useRjesenja().resetState;
-  useEffect(() => resetState(), []);
+  useMe();
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f172a] pb-10">
       <Header />
