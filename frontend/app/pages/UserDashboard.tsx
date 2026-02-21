@@ -1,13 +1,18 @@
 /*
-profile edit
 
-sign up i login rade ali ne najbolje nema indikatora ako nesto ne valja error handling
+rijesiti problem sa auth
+
+profile edit
+na privacy pollicy nema nazad button
+slike za znakove i raskrsnice
+smislen nacin bodovanja
+mogucnost vise kategorija 
 
 google auth
 forgot password i reset password
 
 ljepsi UI night mode
-shop
+
 */
 
 import { useUser } from "~/userStore";
@@ -15,9 +20,10 @@ import { Link } from "react-router";
 import Header from "~/components/Header";
 import { lekcije } from "~/data";
 import { useMe } from "~/helpers/useMe";
+import Spinner from "~/components/Spinner";
 
 export default function UserDashboard() {
-  useMe();
+  const { loading } = useMe();
 
   const user = useUser.getState().user || { category: "", username: "" };
 
@@ -29,7 +35,11 @@ export default function UserDashboard() {
     T: "Traktor i radne mašine",
   };
 
-  const opis = categoryMap[user.category] || "Nepoznata kategorija";
+  // const opis = categoryMap[user.category] || "Nepoznata kategorija";
+  const opis = user.category
+    ?.split(",")
+    .map((cat) => categoryMap[cat] || "Nepoznata kategorija");
+  if (loading) return <Spinner />;
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-700">
@@ -44,18 +54,17 @@ export default function UserDashboard() {
         {/* SEKCIJA KATEGORIJE */}
         <section className="mt-10">
           <h2 className="text-xl font-semibold mb-4">🚗 Probni testovi</h2>
-
           <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-            <Link
-              to={`/categorija/${user.category}`}
-              className="flex-none w-64 p-5 bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg transition-all duration-200"
-            >
-              <h3 className="font-bold text-gray-800">
-                {user.category} kategorija
-              </h3>
-              <p className="text-sm text-gray-500 mt-1">{opis}</p>
-            </Link>
-
+            {user.category?.split(",").map((cat, i) => (
+              <Link
+                key={i}
+                to={`/categorija/${cat}`}
+                className="flex-none w-64 p-5 bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg transition-all duration-200"
+              >
+                <h3 className="font-bold text-gray-800">{cat} kategorija</h3>
+                <p className="text-sm text-gray-500 mt-1">{opis[i]}</p>
+              </Link>
+            ))}
             <Link
               to={`/categorija/P`}
               className="flex-none w-64 p-5 bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg transition-all duration-200"

@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { FaAppleWhole, FaCartShopping, FaMoon } from "react-icons/fa6";
+import { FaAppleWhole, FaMoon } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
 import { IoSunny } from "react-icons/io5";
 
@@ -25,15 +25,6 @@ function Header() {
 
         {/* DESNA SEKCIJA - NAVIGACIJA I ALATI */}
         <div className="flex items-center gap-3 pl-4">
-          <Link
-            to="/shop"
-            className="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors relative"
-          >
-            <FaCartShopping className="text-xl" />
-            {/* Mala crvena tačkica kao notifikacija za korpu */}
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
-          </Link>
-
           <Link
             to="/profile"
             className="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"

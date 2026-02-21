@@ -18,7 +18,7 @@ const routes = [
     route("/profile", "./pages/UserProfile.tsx"),
     route("/napredak", "./pages/UserProgress.tsx"), //tek kad bude f2 zasad ne vidim gdje se uklapa
 
-    route("/shop", "./pages/Shop.tsx"),
+    // route("/shop", "./pages/Shop.tsx"),
 
     route("/test/:tip/:id/:method", "./pages/Test.tsx"),
     route("/results/:id", "./pages/Results.tsx"),

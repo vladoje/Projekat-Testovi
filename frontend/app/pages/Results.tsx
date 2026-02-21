@@ -8,9 +8,10 @@ import { Link } from "react-router";
 import { useTestStore } from "~/testStore";
 import { useEffect } from "react";
 import { useMe } from "~/helpers/useMe";
+import Spinner from "~/components/Spinner";
 
 function Results() {
-  useMe("results");
+  const { loading } = useMe("results");
   const rjesenja = useRjesenja().rjesenja;
   const choises = useRjesenja().choises;
   const pitanja = useTestStore().pitanja; //napraviti pitanja store
@@ -41,6 +42,7 @@ function Results() {
     }
     f();
   }, []);
+  if (loading) return <Spinner />;
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20">
       <Header />

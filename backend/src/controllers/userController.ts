@@ -64,7 +64,7 @@ export async function deleteUser(req: Request, res: Response) {
 export async function getUser(req: Request, res: Response) {
   try {
     const userId = (req as any).userId;
-
+    console.log(userId);
     const result = await query(
       "SELECT id, username, email, category, rijesio_testova FROM users WHERE id = $1",
       [userId],
