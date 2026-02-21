@@ -1,7 +1,6 @@
 /*
 
-popraviti testove, unistio sam ga dodavanjem vise mogucih kategorija
-
+popraviti shufle bug gdje znak zaluta u suva pitanja
 na privacy pollicy nema nazad button
 slike za znakove i raskrsnice
 smislen nacin bodovanja

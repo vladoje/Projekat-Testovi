@@ -7,9 +7,11 @@ import { pitanjeDB } from "../utils/testHelpers";
 export async function generateTest(req: Request, res: Response) {
   try {
     const userId = (req as any).userId;
+    let category = req.params.category;
+    if (Array.isArray(category)) category = category[0];
 
     const userResult = await query(
-      "SELECT category, rijesio_testova FROM users WHERE id=$1",
+      "SELECT  rijesio_testova FROM users WHERE id=$1",
       [userId],
     );
 
@@ -17,7 +19,7 @@ export async function generateTest(req: Request, res: Response) {
       return res.status(404).send({ message: "User not found" });
     }
 
-    const { category, rijesio_testova: rijesioTestova } = userResult.rows[0];
+    const { rijesio_testova: rijesioTestova } = userResult.rows[0];
 
     const result = await query(
       `SELECT * FROM question_progress 

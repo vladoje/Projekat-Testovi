@@ -39,10 +39,14 @@ export default function useTestData(i: number) {
 
     const fetchTest = async () => {
       const url =
-        location === user.category
-          ? "/test/generate-test"
-          : `/test/generate-test/${mapType(location)}`;
-
+        location === "A" ||
+        location === "B" ||
+        location === "C" ||
+        location === "D" ||
+        location === "T"
+          ? `/test/generate-test/${location}`
+          : `/test/generate-test-type/${mapType(location)}`;
+      console.log(url);
       const res = await fetch(`http://127.0.0.1:5000${url}`, {
         credentials: "include",
       });
