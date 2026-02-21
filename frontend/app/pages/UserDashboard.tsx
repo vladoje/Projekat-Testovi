@@ -1,8 +1,7 @@
 /*
 
-rijesiti problem sa auth
+popraviti testove, unistio sam ga dodavanjem vise mogucih kategorija
 
-profile edit
 na privacy pollicy nema nazad button
 slike za znakove i raskrsnice
 smislen nacin bodovanja

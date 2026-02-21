@@ -1,5 +1,5 @@
 import { create } from "zustand";
-interface User {
+export interface User {
   id: number;
   username: string;
   email: string;
