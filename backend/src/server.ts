@@ -16,9 +16,13 @@ const PORT = process.env.PORT || 5000;
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
+
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://ime-projekta.vercel.app"],
+    origin: [
+      "http://localhost:5173", // lokalni dev
+      "https://projekat-testovi-53rmhj20u-vladojes-projects.vercel.app", // tvoj live FE
+    ],
     credentials: true,
   }),
 );
