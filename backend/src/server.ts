@@ -22,6 +22,7 @@ app.use(
     origin: [
       "http://localhost:5173", // lokalni dev
       "https://projekat-testovi-53rmhj20u-vladojes-projects.vercel.app", // tvoj live FE
+      "https://projekat-testovi-fir1.vercel.app",
     ],
     credentials: true,
   }),
