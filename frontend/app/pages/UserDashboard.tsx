@@ -1,6 +1,6 @@
 /*
-smislen nacin bodovanja
 
+prva pomoc pitanje greska u odgovoru
 
 google auth
 forgot password i reset password

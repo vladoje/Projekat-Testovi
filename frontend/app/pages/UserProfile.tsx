@@ -42,7 +42,7 @@ function UserProfile() {
   }
 
   function handleDelete() {
-    fetch("http://127.0.0.1:5000/user/delete-user", {
+    fetch("https://projekat-testovi.onrender.com/user/delete-user", {
       method: "DELETE",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -67,7 +67,7 @@ function UserProfile() {
       setCategory(user.category.split(","));
       return;
     }
-    fetch("http://127.0.0.1:5000/user/update-user", {
+    fetch("https://projekat-testovi.onrender.com/user/update-user", {
       method: "PATCH",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

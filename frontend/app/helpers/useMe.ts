@@ -15,9 +15,12 @@ export function useMe(results?: string) {
 
     const fetchMe = async () => {
       try {
-        const res = await fetch("http://127.0.0.1:5000/user/me", {
-          credentials: "include",
-        });
+        const res = await fetch(
+          "https://projekat-testovi.onrender.com/user/me",
+          {
+            credentials: "include",
+          },
+        );
 
         const data = await res.json();
 

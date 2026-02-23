@@ -69,24 +69,27 @@ export default function Register() {
       return;
     }
 
-    const loginRes = await fetch("http://127.0.0.1:5000/auth/register", {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email,
-        password,
-        username: name.slice(0, 100),
-        category: categories.join(","),
-      }),
-    });
+    const loginRes = await fetch(
+      "https://projekat-testovi.onrender.com/auth/register",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          password,
+          username: name.slice(0, 100),
+          category: categories.join(","),
+        }),
+      },
+    );
 
     if (!loginRes.ok) {
       toast.error("Došlo je do greške prilikom registracije");
       return;
     }
 
-    const meRes = await fetch("http://127.0.0.1:5000/user/me", {
+    const meRes = await fetch("https://projekat-testovi.onrender.com/user/me", {
       credentials: "include",
     });
     const user = await meRes.json();

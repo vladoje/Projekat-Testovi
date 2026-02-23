@@ -3,7 +3,7 @@ import { OptionCard } from "~/components/OptionCard";
 
 import { useRjesenja } from "~/store";
 import { FaCircleCheck, FaCircleXmark, FaRotateLeft } from "react-icons/fa6";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 
 import { useTestStore } from "~/testStore";
 import { useEffect } from "react";
@@ -12,11 +12,17 @@ import Spinner from "~/components/Spinner";
 
 function Results() {
   const { loading } = useMe("results");
+
+  const location = useLocation();
+  const cat = location.pathname.split("/").at(2) || "";
+
   const rjesenja = useRjesenja().rjesenja;
   const choises = useRjesenja().choises;
-  const pitanja = useTestStore().pitanja; //napraviti pitanja store
-  const brojBodeva = rjesenja.filter(Boolean).length;
-  const procenat = Math.round((brojBodeva / pitanja.length) * 100);
+  const pitanja = useTestStore().pitanja;
+
+  let [brojBodeva, maxBodova] = getBodova(rjesenja, cat, pitanja.length);
+
+  const procenat = Math.round((brojBodeva / maxBodova) * 100);
   const polozio = procenat >= 90; // Granica za prolaz
   useEffect(() => {
     async function f() {
@@ -25,7 +31,7 @@ function Results() {
         return { question_id: pitanje.question_id, answer: isCorrect };
       });
       const loginRes = await fetch(
-        "http://127.0.0.1:5000/test/handle-results",
+        "https://projekat-testovi.onrender.com/test/handle-results",
         {
           method: "PATCH",
           credentials: "include",
@@ -70,7 +76,7 @@ function Results() {
           </h2>
           <h1 className="text-6xl font-black mb-2">
             {brojBodeva}
-            <span className="text-2xl opacity-60">/{pitanja.length}</span>
+            <span className="text-2xl opacity-60">/{maxBodova}</span>
           </h1>
           <p
             className={`text-lg font-bold ${polozio ? "text-white" : "text-red-500"}`}
@@ -176,6 +182,67 @@ function Results() {
       </main>
     </div>
   );
+}
+export function getBodova(rjesenja: boolean[], cat: string, duzina: number) {
+  let brojBodeva = 0;
+  let maxBodova = duzina;
+  let brSuvih;
+  let brZnakova;
+  let brRaskrsnica;
+  switch (cat) {
+    case "A":
+      brSuvih = rjesenja.slice(0, 20).filter(Boolean).length;
+      brZnakova = rjesenja.slice(20, 30).filter(Boolean).length;
+      brRaskrsnica = rjesenja.slice(30, 40).filter(Boolean).length;
+      brojBodeva = brSuvih * 2 + brZnakova * 3 + brRaskrsnica * 5;
+      maxBodova = 120;
+      break;
+    case "B":
+      brSuvih = rjesenja.slice(0, 20).filter(Boolean).length;
+      brZnakova = rjesenja.slice(20, 30).filter(Boolean).length;
+      brRaskrsnica = rjesenja.slice(30, 40).filter(Boolean).length;
+      brojBodeva = brSuvih * 2 + brZnakova * 3 + brRaskrsnica * 5;
+      maxBodova = 120;
+      break;
+    case "C":
+      brSuvih = rjesenja.slice(0, 30).filter(Boolean).length;
+      brZnakova = rjesenja.slice(30, 40).filter(Boolean).length;
+      brRaskrsnica = rjesenja.slice(40, 50).filter(Boolean).length;
+      brojBodeva = brSuvih * 2 + brZnakova * 3 + brRaskrsnica * 5;
+      maxBodova = 140;
+      break;
+    case "D":
+      brSuvih = rjesenja.slice(0, 30).filter(Boolean).length;
+      brZnakova = rjesenja.slice(30, 40).filter(Boolean).length;
+      brRaskrsnica = rjesenja.slice(40, 50).filter(Boolean).length;
+      brojBodeva = brSuvih * 2 + brZnakova * 3 + brRaskrsnica * 5;
+      maxBodova = 140;
+      break;
+    case "T":
+      brSuvih = rjesenja.slice(0, 20).filter(Boolean).length;
+      brZnakova = rjesenja.slice(20, 30).filter(Boolean).length;
+      brRaskrsnica = rjesenja.slice(30, 40).filter(Boolean).length;
+      brojBodeva = brSuvih * 2 + brZnakova * 3 + brRaskrsnica * 5;
+      maxBodova = 120;
+      break;
+    case "S":
+      brojBodeva = rjesenja.filter(Boolean).length;
+      maxBodova = duzina;
+      break;
+    case "Z":
+      brojBodeva = rjesenja.filter(Boolean).length;
+      maxBodova = duzina;
+      break;
+    case "R":
+      brojBodeva = rjesenja.filter(Boolean).length;
+      maxBodova = duzina;
+      break;
+    case "P":
+      brojBodeva = rjesenja.filter(Boolean).length;
+      maxBodova = duzina;
+      break;
+  }
+  return [brojBodeva, maxBodova];
 }
 
 export default Results;

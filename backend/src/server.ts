@@ -18,8 +18,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173", // origin FE
-    credentials: true, // dozvoljava cookies
+    origin: ["http://localhost:5173", "https://ime-projekta.vercel.app"],
+    credentials: true,
   }),
 );
 // Routes

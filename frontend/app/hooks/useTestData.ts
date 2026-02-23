@@ -37,7 +37,6 @@ export default function useTestData(i: number) {
 
   useEffect(() => {
     if (loading || !user) return; // ⬅️ samo guard
-
     const fetchTest = async () => {
       const url =
         location === "A" ||
@@ -48,7 +47,7 @@ export default function useTestData(i: number) {
           ? `/test/generate-test/${location}`
           : `/test/generate-test-type/${mapType(location)}`;
 
-      const res = await fetch(`http://127.0.0.1:5000${url}`, {
+      const res = await fetch(`https://projekat-testovi.onrender.com${url}`, {
         credentials: "include",
       });
 
@@ -60,6 +59,7 @@ export default function useTestData(i: number) {
         ...data.pitanja.filter(
           (pitanj: pitanje) => pitanj.type === "raskrsnica",
         ),
+        ...data.pitanja.filter((pitanj: pitanje) => pitanj.type === "pomoc"),
       ];
       setPitanja(p);
     };

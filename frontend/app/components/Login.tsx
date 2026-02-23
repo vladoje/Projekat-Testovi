@@ -27,12 +27,15 @@ export default function Login() {
       setErr("Sifra mora sadrzati minimalno 8 karaktera");
       return;
     }
-    const loginRes = await fetch("http://127.0.0.1:5000/auth/login", {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    const loginRes = await fetch(
+      "https://projekat-testovi.onrender.com/auth/login",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      },
+    );
 
     if (!loginRes.ok) {
       setErr("Email ili lozinka ne odgovaraju");
@@ -40,7 +43,7 @@ export default function Login() {
       return;
     }
 
-    const meRes = await fetch("http://127.0.0.1:5000/user/me", {
+    const meRes = await fetch("https://projekat-testovi.onrender.com/user/me", {
       credentials: "include",
     });
 

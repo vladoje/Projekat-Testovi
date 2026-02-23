@@ -25,7 +25,11 @@ function useTest() {
     setAnswers(prethodniOdgovori);
   }, [i, choises]); //
 
-  const handleNext = (trenutnoPitanje: pitanje, duzina: number) => {
+  const handleNext = (
+    trenutnoPitanje: pitanje,
+    duzina: number,
+    cat: string,
+  ) => {
     // 1. Izračunaj da li je tačno
     const tacno = isTrue(trenutnoPitanje?.correct_answer || [], answers || []);
     if (ucenje && !tacno) {
@@ -40,7 +44,7 @@ function useTest() {
       // 4. Provjeri da li je kraj
       if (i >= duzina) {
         // Mala pauza (timeout 0) dopušta Reactu da završi state update prije navigacije
-        setTimeout(() => navigate("/results/A"), 10);
+        setTimeout(() => navigate(`/results/${cat}`), 10);
       } else {
         // Idi na sljedeće i resetuj lokalni state
         setI(i + 1);
