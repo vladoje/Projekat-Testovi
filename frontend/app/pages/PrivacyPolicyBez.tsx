@@ -1,8 +1,17 @@
 import { FaShieldHalved, FaLock, FaEnvelope } from "react-icons/fa6";
+import { Link } from "react-router";
 
 function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f172a] pb-20">
+      <div className="mt-6 flex justify-center">
+        <Link
+          to="/register"
+          className="text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+        >
+          ← Nazad na registraciju
+        </Link>
+      </div>
       <main className="max-w-md mx-auto px-6 pt-10">
         {/* HEADER SEKCIJA */}
         <div className="flex flex-col items-center mb-10">

@@ -1,10 +1,6 @@
 /*
-
-popraviti shufle bug gdje znak zaluta u suva pitanja
-na privacy pollicy nema nazad button
-slike za znakove i raskrsnice
 smislen nacin bodovanja
-mogucnost vise kategorija 
+
 
 google auth
 forgot password i reset password

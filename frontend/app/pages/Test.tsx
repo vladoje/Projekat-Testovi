@@ -30,7 +30,27 @@ function Test() {
             {trenutnoPitanje?.question_text}
           </h1>
         </div>
-
+        {(trenutnoPitanje.type === "znak" ||
+          trenutnoPitanje.type === "raskrsnica") && (
+          <div className="mb-8">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm p-4 flex justify-center">
+              <img
+                src={`/pitanja-slike/${trenutnoPitanje.question_id}.webp`}
+                alt="Slika pitanja"
+                className="
+          max-h-52
+          w-auto
+          object-contain
+          rounded-xl
+          transition-transform
+          duration-300
+          hover:scale-[1.02]
+        "
+                loading="lazy"
+              />
+            </div>
+          </div>
+        )}
         <Izaberi
           trenutnoPitanje={trenutnoPitanje || ({} as pitanje)}
           answers={answers || []}

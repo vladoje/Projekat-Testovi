@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router";
 import { useMe } from "~/helpers/useMe";
 import { useTestStore } from "~/testStore";
 import { useUser } from "~/userStore";
+
 export interface pitanje {
   question_id: number;
   question_text: string;
@@ -46,13 +47,21 @@ export default function useTestData(i: number) {
         location === "T"
           ? `/test/generate-test/${location}`
           : `/test/generate-test-type/${mapType(location)}`;
-      console.log(url);
+
       const res = await fetch(`http://127.0.0.1:5000${url}`, {
         credentials: "include",
       });
 
       const data = await res.json();
-      setPitanja(data.pitanja);
+
+      const p = [
+        ...data.pitanja.filter((pitanj: pitanje) => pitanj.type === "pitanje"),
+        ...data.pitanja.filter((pitanj: pitanje) => pitanj.type === "znak"),
+        ...data.pitanja.filter(
+          (pitanj: pitanje) => pitanj.type === "raskrsnica",
+        ),
+      ];
+      setPitanja(p);
     };
 
     fetchTest();
