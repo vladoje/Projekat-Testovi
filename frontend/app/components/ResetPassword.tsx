@@ -38,7 +38,7 @@ function ResetPassword() {
           credentials: "include",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            password: pass1,
+            newPassword: pass1,
             token,
           }),
         },

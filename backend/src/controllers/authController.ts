@@ -136,20 +136,30 @@ export async function forgotPassword(req: Request, res: Response) {
 
 export async function resetPassword(req: Request, res: Response) {
   const { token, newPassword } = req.body;
-  if (!token || !newPassword)
+  if (!token || !newPassword) {
+    console.log("1");
     return res.status(400).send("Bad request body empty");
-  if (newPassword.length < 8)
+  }
+  if (newPassword.length < 8) {
+    console.log("2");
     return res.status(400).send("New password too short");
+  }
   const hashedPassword = await bcrypt.hash(newPassword, 10);
   //provjeri token
   const result = await query(
     "SELECT * FROM reset_tokens WHERE token=$1 AND expires_at > NOW()",
     [token],
   );
-  if (!result.rows[0]) return res.status(400).send("Invalid or expired token");
+  if (!result.rows[0]) {
+    console.log("3");
+    return res.status(400).send("Invalid or expired token");
+  }
   //nabavi userId
   const userId = result.rows[0].user_id;
-  if (!userId) return res.status(400).send("Invalid or expired token");
+  if (!userId) {
+    console.log("4");
+    return res.status(400).send("Invalid or expired token");
+  }
   await query("UPDATE users SET password_hash=$1 WHERE id=$2", [
     hashedPassword,
     userId,
