@@ -1,33 +1,21 @@
-import React from "react";
-
-const Spinner: React.FC = () => {
+const Spinner = () => {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-      }}
-    >
-      <div
-        style={{
-          border: "4px solid rgba(0, 0, 0, 0.1)",
-          borderTop: "4px solid #000",
-          borderRadius: "50%",
-          width: "40px",
-          height: "40px",
-          animation: "spin 1s linear infinite",
-        }}
-      />
-      <style>
-        {`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}
-      </style>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-900/90 via-slate-800/90 to-slate-900/90 backdrop-blur-sm">
+      <div className="relative">
+        {/* outer glow */}
+        <div className="absolute inset-0 rounded-full blur-xl bg-blue-500/30" />
+
+        {/* spinning ring */}
+        <div className="w-20 h-20 rounded-full border-[5px] border-slate-700 border-t-blue-500 animate-spin" />
+
+        {/* inner ring */}
+        <div className="absolute inset-2 rounded-full border-2 border-slate-600/60" />
+
+        {/* center dot */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse" />
+        </div>
+      </div>
     </div>
   );
 };

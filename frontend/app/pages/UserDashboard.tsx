@@ -5,7 +5,10 @@ prva pomoc pitanje greska u odgovoru
 google auth
 forgot password i reset password
 
-ljepsi UI night mode
+ljepsi UI night mode da ne skace stranica dok odgovaras 
+
+readme.md
+
 
 */
 
