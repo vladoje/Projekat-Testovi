@@ -121,7 +121,7 @@ export async function forgotPassword(req: Request, res: Response) {
       html: `
       <p>Hello,</p>
       <pKliknite dugme ispod da biste promjenili vasu lozinku:</p>
-      <a href="https://projekat-testovi.onrender.com/reset-password?token=${token}" style="display:inline-block; padding:10px 20px; background-color:#007bff; color:white; text-decoration:none; border-radius:5px;">Reset Password</a>
+      <a href="https://projekat-testovi-fir1.vercel.app/reset-password?token=${token}" style="display:inline-block; padding:10px 20px; background-color:#007bff; color:white; text-decoration:none; border-radius:5px;">Reset Password</a>
       <p>Ako niste zatrazili promjenu sifre, mozete ignorisati onaj email.</p>
     `,
     });
