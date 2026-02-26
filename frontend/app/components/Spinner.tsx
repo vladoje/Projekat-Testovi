@@ -1,6 +1,6 @@
 const Spinner = () => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-900/90 via-slate-800/90 to-slate-900/90 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-linear-to-br from-slate-900/90 via-slate-800/90 to-slate-900/90 backdrop-blur-sm">
       <div className="relative">
         {/* outer glow */}
         <div className="absolute inset-0 rounded-full blur-xl bg-blue-500/30" />

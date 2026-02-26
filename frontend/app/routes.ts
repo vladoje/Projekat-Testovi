@@ -9,6 +9,8 @@ const routes = [
     route("/login", "./components/Login.tsx"),
     route("/register", "./components/Register.tsx"),
     route("/forgot-password", "./components/ForgotPassword.tsx"),
+    route("/check-email", "./components/CheckEmail.tsx"),
+    route("/reset-password", "./components/ResetPassword.tsx"),
 
     index("./pages/UserDashboard.tsx"),
 

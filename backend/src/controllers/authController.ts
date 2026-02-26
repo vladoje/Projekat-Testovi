@@ -14,6 +14,8 @@ import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
 import isEmail from "validator/lib/isEmail";
 import generateStarterProgress from "../utils/starterProgress";
+import sgMail from "@sendgrid/mail";
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 export async function login(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
@@ -112,23 +114,23 @@ export async function forgotPassword(req: Request, res: Response) {
   });
   // Send an email using async/await
   try {
-    const info = await transporter.sendMail({
-      from: '"Your App" <yourapp@example.com>',
-      to: email,
+    await sgMail.send({
+      to: email, // email korisnika kojem šalješ link
+      from: "vladorakic07@gmail.com", // tvoj validni verified sender email na SendGrid-u
       subject: "Reset your password",
       html: `
-<p>Hello,</p>
-<p>Click the button below to reset your password:</p>
-<a href="http://localhost:3000/reset-password?token=${token}" style="display:inline-block; padding:10px 20px; background-color:#007bff; color:white; text-decoration:none; border-radius:5px;">Reset Password</a>
-<p>If you didn't request a password reset, you can ignore this email.</p>
-`,
+      <p>Hello,</p>
+      <pKliknite dugme ispod da biste promjenili vasu lozinku:</p>
+      <a href="https://projekat-testovi.onrender.com/reset-password?token=${token}" style="display:inline-block; padding:10px 20px; background-color:#007bff; color:white; text-decoration:none; border-radius:5px;">Reset Password</a>
+      <p>Ako niste zatrazili promjenu sifre, mozete ignorisati onaj email.</p>
+    `,
     });
-    console.log("Message sent:", info.messageId);
+
+    console.log("Email sent successfully");
   } catch (err) {
     console.error(err);
     return res.status(500).send("Failed to send email");
   }
-
   res.send({ message: "Check your email for reseting password" });
 }
 

@@ -1,10 +1,15 @@
 /*
+prva pomoc pitanje greska u odgovoru 74 85 53 danas neon nesto baca greske
 
-prva pomoc pitanje greska u odgovoru
-
-google auth
+ 
 forgot password i reset password
 
+napredak korisnika, koristeci tanstack query
+
+google auth
+
+
+znakovi i raskrsnice nisu ujednacene velicine
 ljepsi UI night mode da ne skace stranica dok odgovaras 
 
 readme.md

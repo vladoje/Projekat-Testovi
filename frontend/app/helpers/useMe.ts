@@ -6,7 +6,7 @@ import { useUser } from "~/userStore";
 export function useMe(results?: string) {
   const navigate = useNavigate();
   const setUser = useUser((s) => s.setUser);
-  const resetState = useRjesenja().resetState;
+  const { resetState } = useRjesenja();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -4,12 +4,12 @@ import { useState } from "react";
 import { useUser } from "~/userStore";
 import toast from "react-hot-toast";
 
-function isValidEmail(email: string) {
+export function isValidEmail(email: string) {
   if (email.length > 100) return false;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function isValidPassword(password: string) {
+export function isValidPassword(password: string) {
   return password.length >= 8 && password.length <= 100;
 }
 
