@@ -85,7 +85,7 @@ export async function getUserQuestions(req: Request, res: Response) {
     const userId = (req as any).userId;
 
     const result = await query(
-      "SELECT qp.*,q.question_text FROM question_progress qp JOIN questions q ON qp.question_id = q.question_id WHERE qp.user_id = $1 ORDER BY qp.id ASC",
+      "SELECT qp.*,q.question_text FROM question_progress qp JOIN questions q ON qp.question_id = q.question_id WHERE qp.user_id = $1 ORDER BY qp.question_id ASC",
       [userId],
     );
 
