@@ -1,6 +1,4 @@
 /*
-prva pomoc pitanje greska u odgovoru 74 85 53 danas neon nesto baca greske
-
 napredak korisnika, koristeci tanstack query
 
 google auth

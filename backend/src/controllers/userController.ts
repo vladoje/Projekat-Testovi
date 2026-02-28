@@ -80,3 +80,22 @@ export async function getUser(req: Request, res: Response) {
     return res.status(500).send({ message: "Internal server error" });
   }
 }
+export async function getUserQuestions(req: Request, res: Response) {
+  try {
+    const userId = (req as any).userId;
+
+    const result = await query(
+      "SELECT * FROM question_progress WHERE user_id = $1",
+      [userId],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    return res.status(200).send({ questions: result.rows[0] });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).send({ message: "Internal server error" });
+  }
+}

@@ -9,10 +9,21 @@ import { useTestStore } from "~/testStore";
 import { useEffect } from "react";
 import { useMe } from "~/helpers/useMe";
 import Spinner from "~/components/Spinner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { updateQuestions } from "~/helpers/questions";
+import type { pitanje } from "~/hooks/useTestData";
 
 function Results() {
   const { loading } = useMe("results");
+  const queryClient = useQueryClient();
 
+  const mutation = useMutation({
+    mutationFn: (args: { pitanja: pitanje[]; rjesenja: boolean[] }) =>
+      updateQuestions(args.pitanja, args.rjesenja),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["question_progress"] });
+    },
+  });
   const location = useLocation();
   const cat = location.pathname.split("/").at(2) || "";
 
@@ -25,30 +36,10 @@ function Results() {
   const procenat = Math.round((brojBodeva / maxBodova) * 100);
   const polozio = procenat >= 90; // Granica za prolaz
   useEffect(() => {
-    async function f() {
-      const rj = pitanja.map((pitanje, idx) => {
-        const isCorrect = rjesenja[idx];
-        return { question_id: pitanje.question_id, answer: isCorrect };
-      });
-      const loginRes = await fetch(
-        "https://projekat-testovi.onrender.com/test/handle-results",
-        {
-          method: "PATCH",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ results: rj }),
-        },
-      );
-      if (!loginRes.ok) {
-        // handle error
-        return;
-      }
-    }
-    f();
+    mutation.mutate({ pitanja, rjesenja });
   }, []);
-  if (loading) return <Spinner />;
+  if (loading || mutation.isPending) return <Spinner />;
+  if (mutation.isError) return <div>Error: {mutation.error.message}</div>;
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20">
       <Header />
