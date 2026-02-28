@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { FaAppleWhole, FaMoon } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
 import { IoSunny } from "react-icons/io5";
-
+import { GiStairsGoal } from "react-icons/gi";
 function Header() {
   const darkMode = true; // Kasnije ćeš ovo vezati na state
 
@@ -31,7 +31,12 @@ function Header() {
           >
             <CgProfile className="text-2xl" />
           </Link>
-
+          <Link
+            to="/napredak"
+            className="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+          >
+            <GiStairsGoal className="text-2xl" />
+          </Link>
           <button className="p-2.5 cursor-pointer text-amber-500 dark:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all active:rotate-45">
             {darkMode ? (
               <FaMoon className="text-xl" />

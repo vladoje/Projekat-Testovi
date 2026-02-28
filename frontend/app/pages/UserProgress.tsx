@@ -21,26 +21,26 @@ export interface userPitanje {
 }
 function UserProgress() {
   const { loading } = useMe();
-  const {
-    data: { questions },
-    isPending,
-    isError,
-  } = useQuery({
+  const { data, isPending, isError } = useQuery({
     queryKey: ["question_progress"],
     queryFn: getQuestions,
+    staleTime: 1000 * 60 * 60,
   });
+  const questions = data?.questions ?? [];
   const userCategories = useUser().user?.category;
   const [selectedType, setSelectedType] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(5);
 
   const questionTypes = ["all", "pitanje", "znak", "raskrsnica", "pomoc"];
-  console.log(questions);
+
   // Filter and search logic
   const filteredQuestions = useMemo(() => {
     let filtered = questions ?? [];
     filtered = filtered.filter((q: userPitanje) =>
-      q.categories.split(",").some((cat) => userCategories?.includes(cat)),
+      q.question_categories
+        .split(",")
+        .some((cat) => userCategories?.includes(cat)),
     );
     if (selectedType !== "all") {
       filtered = filtered.filter(
@@ -56,7 +56,7 @@ function UserProgress() {
     }
 
     return filtered;
-  }, [questions, selectedType, searchQuery]); // ✅ data dodan
+  }, [questions, selectedType, searchQuery, userCategories]);
 
   const visibleQuestions = filteredQuestions.slice(0, visibleCount);
   const hasMore = visibleCount < filteredQuestions.length;
@@ -199,9 +199,14 @@ export function QuestionCard({ question }: QuestionCardProps) {
       {hasImage && (
         <div className="my-3">
           <img
+            loading="lazy"
             src={`/pitanja-slike/${question.question_id}.webp`}
-            alt={`Question ${question.question_id}`}
-            className="w-full h-auto rounded-md"
+            className="
+    w-full
+    max-h-64
+    object-contain
+    rounded-md
+  "
           />
         </div>
       )}
