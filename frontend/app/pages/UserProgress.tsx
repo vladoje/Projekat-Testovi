@@ -27,6 +27,7 @@ function UserProgress() {
     staleTime: 1000 * 60 * 60,
   });
   const questions = data?.questions ?? [];
+
   const userCategories = useUser().user?.category;
   const [selectedType, setSelectedType] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
