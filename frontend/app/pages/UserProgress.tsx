@@ -20,7 +20,11 @@ export interface userPitanje {
 }
 function UserProgress() {
   const { loading } = useMe();
-  const { data, isPending, isError } = useQuery({
+  const {
+    data: { questions },
+    isPending,
+    isError,
+  } = useQuery({
     queryKey: ["question_progress"],
     queryFn: getQuestions,
   });
@@ -29,33 +33,31 @@ function UserProgress() {
   const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(5);
 
-  const questionTypes = ["all", "znak", "raskrsnica", "teorija", "praksa"];
+  const questionTypes = ["all", "pitanje", "znak", "raskrsnica", "pomoc"];
 
   // Filter and search logic
   const filteredQuestions = useMemo(() => {
-    let filtered = data;
+    let filtered = questions ?? [];
 
-    // Filter by type
     if (selectedType !== "all") {
-      //unionisati question text
-      filtered = filtered?.filter?.(
+      filtered = filtered.filter(
         (q: userPitanje) => q.question_type === selectedType,
       );
     }
 
-    // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      filtered = filtered?.filter?.((q: userPitanje) =>
+      filtered = filtered.filter((q: userPitanje) =>
         q.question_text.toLowerCase().includes(query),
       );
     }
 
     return filtered;
-  }, [selectedType, searchQuery]);
+  }, [questions, selectedType, searchQuery]); // ✅ data dodan
 
-  const visibleQuestions = filteredQuestions?.slice?.(0, visibleCount);
-  const hasMore = visibleCount < filteredQuestions?.length;
+  const visibleQuestions = filteredQuestions.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredQuestions.length;
+
   if (loading || isPending) return <Spinner />;
   if (isError) return <div>Error loading questions</div>;
 

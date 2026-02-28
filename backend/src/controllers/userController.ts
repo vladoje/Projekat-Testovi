@@ -85,12 +85,11 @@ export async function getUserQuestions(req: Request, res: Response) {
     const userId = (req as any).userId;
 
     const result = await query(
-      "SELECT qp.*,q.question_text FROM question_progress qp JOIN questions q ON qp.question_id = q.question_id WHERE qp.user_id = $1",
+      "SELECT qp.*,q.question_text,q.categories FROM question_progress qp JOIN questions q ON qp.question_id = q.question_id WHERE qp.user_id = $1",
       [userId],
     );
 
     if (result.rowCount === 0) {
-      console.log(userId);
       return res.status(404).send({ message: "User not found" });
     }
 
