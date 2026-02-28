@@ -6,6 +6,7 @@ import { useMe } from "~/helpers/useMe";
 import Header from "~/components/Header";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
+import { useUser } from "~/userStore";
 export interface userPitanje {
   question_progress_id: number;
   question_id: number;
@@ -28,17 +29,19 @@ function UserProgress() {
     queryKey: ["question_progress"],
     queryFn: getQuestions,
   });
-
+  const userCategories = useUser().user?.category;
   const [selectedType, setSelectedType] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(5);
 
   const questionTypes = ["all", "pitanje", "znak", "raskrsnica", "pomoc"];
-
+  console.log(questions);
   // Filter and search logic
   const filteredQuestions = useMemo(() => {
     let filtered = questions ?? [];
-
+    filtered = filtered.filter((q: userPitanje) =>
+      q.categories.split(",").some((cat) => userCategories?.includes(cat)),
+    );
     if (selectedType !== "all") {
       filtered = filtered.filter(
         (q: userPitanje) => q.question_type === selectedType,
