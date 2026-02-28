@@ -4,7 +4,7 @@ export async function getQuestions() {
   const loginRes = await fetch(
     "https://projekat-testovi.onrender.com/user/questions",
     {
-      method: "PATCH",
+      method: "GET",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
