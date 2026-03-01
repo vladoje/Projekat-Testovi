@@ -26,13 +26,14 @@ function UserProgress() {
     queryFn: getQuestions,
     staleTime: 1000 * 60 * 60,
   });
-  const questions = data?.questions ?? [];
+  const questions: userPitanje[] = data?.questions ?? [];
 
   const userCategories = useUser().user?.category;
   const [selectedType, setSelectedType] = useState<string>("all");
+  const [sort, setSort] = useState<string>("k");
   const [searchQuery, setSearchQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(5);
-
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const questionTypes = ["all", "pitanje", "znak", "raskrsnica", "pomoc"];
 
   // Filter and search logic
@@ -55,9 +56,51 @@ function UserProgress() {
         q.question_text.toLowerCase().includes(query),
       );
     }
+    switch (sort) {
+      case "k": {
+        const order = ["pitanje", "znak", "raskrsnica", "pomoc"];
+        filtered = [...filtered].sort((a, b) => {
+          const res =
+            order.indexOf(a.question_type) - order.indexOf(b.question_type);
+          return sortDir === "asc" ? res : -res;
+        });
+        break;
+      }
 
+      case "a": {
+        filtered = [...filtered].sort((a, b) => {
+          const res = a.question_text.localeCompare(b.question_text);
+          return sortDir === "asc" ? res : -res;
+        });
+        break;
+      }
+
+      case "t": {
+        filtered = [...filtered].sort((a, b) => {
+          const res = a.consecutive_correct - b.consecutive_correct;
+          return sortDir === "asc" ? res : -res;
+        });
+        break;
+      }
+
+      case "n": {
+        filtered = [...filtered].sort((a, b) => {
+          const res = Number(a.last_result) - Number(b.last_result);
+          return sortDir === "asc" ? res : -res;
+        });
+        break;
+      }
+
+      case "v": {
+        filtered = [...filtered].sort((a, b) => {
+          const res = a.times_seen - b.times_seen;
+          return sortDir === "asc" ? res : -res;
+        });
+        break;
+      }
+    }
     return filtered;
-  }, [questions, selectedType, searchQuery, userCategories]);
+  }, [questions, selectedType, searchQuery, userCategories, sort, sortDir]);
 
   const visibleQuestions = filteredQuestions.slice(0, visibleCount);
   const hasMore = visibleCount < filteredQuestions.length;
@@ -103,7 +146,43 @@ function UserProgress() {
             </button>
           ))}
         </div>
+        <div className="mb-4 flex gap-2">
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value)}
+            className="
+      flex-1
+      bg-white border border-gray-300
+      rounded-lg px-3 py-2.5
+      text-sm text-gray-700
+      focus:outline-none focus:ring-2 focus:ring-blue-500
+    "
+          >
+            <option value="k">Po kategoriji</option>
+            <option value="a">Abecedno</option>
+            <option value="t">Broj zaredom tačnih</option>
+            <option value="n">Broj grešaka</option>
+            <option value="v">Puta viđeno</option>
+          </select>
 
+          <button
+            type="button"
+            onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
+            className="
+    min-w-22.5
+    px-3 py-2.5
+    rounded-lg
+    border border-gray-300
+    bg-white
+    text-sm font-semibold
+    text-gray-700
+    hover:bg-gray-50
+    flex items-center justify-center
+  "
+          >
+            {sortDir === "asc" ? "↑ ASC" : "↓ DESC"}
+          </button>
+        </div>
         {/* Results Count */}
         <div className="mb-3 text-sm text-gray-600">
           {filteredQuestions?.length}{" "}
@@ -164,10 +243,7 @@ export function QuestionCard({ question }: QuestionCardProps) {
 
   // Calculate correct and incorrect counts (mock logic based on data)
   const correctCount = question.consecutive_correct;
-  const incorrectCount = Math.max(
-    0,
-    question.times_seen - question.consecutive_correct,
-  );
+  const incorrectCount = Number(!question.last_result);
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-3">
