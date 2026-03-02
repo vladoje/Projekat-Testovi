@@ -11,6 +11,7 @@ const routes = [
     route("/forgot-password", "./components/ForgotPassword.tsx"),
     route("/check-email", "./components/CheckEmail.tsx"),
     route("/reset-password", "./components/ResetPassword.tsx"),
+    route("//oauth-success", "./components/OauthSuccess.tsx"),
 
     index("./pages/UserDashboard.tsx"),
 
