@@ -7,13 +7,18 @@ import authRoutes from "./routes/auth";
 import testRoutes from "./routes/test";
 import userRoutes from "./routes/user";
 import { authMiddleware } from "./middleware/authMidleware";
-const cors = require("cors");
+import passport from "passport";
+
+import cors from "cors";
+import { configurePassport } from "./controllers/passport";
 // Load .env
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middlewares
+configurePassport();
+app.use(passport.initialize());
 app.use(express.json());
 app.use(cookieParser());
 
@@ -27,6 +32,7 @@ app.use(
     credentials: true,
   }),
 );
+
 // Routes
 app.use("/auth", authRoutes);
 app.use("/test", authMiddleware, testRoutes);
