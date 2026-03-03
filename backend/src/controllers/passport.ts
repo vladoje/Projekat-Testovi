@@ -37,7 +37,7 @@ export const configurePassport = () => {
             );
             user = insert.rows[0];
             console.log(user.id);
-            await generateStarterProgress(user.id);
+            await generateStarterProgress(Number(user.id));
           } else {
             //login
             if (!user.provider) {

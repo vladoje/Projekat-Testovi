@@ -127,18 +127,19 @@ export default function Login() {
               Zaboravili ste šifru?
             </Link>
           </div>
+
+          <button
+            onClick={handleClick}
+            className="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-md transition-transform active:scale-95"
+          >
+            Uloguj se
+          </button>
           <button
             onClick={handleGoogleLogin}
             className="w-full py-4 mt-4 rounded-2xl border border-gray-300 bg-white hover:bg-gray-100 text-gray-900 font-bold shadow-md flex items-center justify-center space-x-2 transition-transform active:scale-95"
           >
             <img src="/google-logo.svg" alt="Google logo" className="w-5 h-5" />
             <span>Login with Google</span>
-          </button>
-          <button
-            onClick={handleClick}
-            className="w-full py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-md transition-transform active:scale-95"
-          >
-            Uloguj se
           </button>
         </div>
 
