@@ -1,5 +1,4 @@
 /*
-google auth
 
 znakovi i raskrsnice nisu ujednacene velicine
 ljepsi UI night mode da ne skace stranica dok odgovaras 

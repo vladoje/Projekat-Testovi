@@ -27,16 +27,27 @@ export const configurePassport = () => {
           ]);
 
           let user = result.rows[0];
-
+          console.log(user);
           // SIGN UP ako ne postoji
           if (!user) {
             let insert = await query<User>(
-              "INSERT INTO users (username,email,password_hash,category)\
-    VALUES($1,$2,$3,$4) RETURNING *",
-              [username, email, null, "B"],
+              "INSERT INTO users (username,email,password_hash,category,provider)\
+    VALUES($1,$2,$3,$4,$5) RETURNING *",
+              [username, email, null, "B", profile.id],
             );
             user = insert.rows[0];
+            console.log(user.id);
             await generateStarterProgress(user.id);
+          } else {
+            //login
+            if (!user.provider) {
+              //sign-up-ovao se preko sifre
+              let update = await query<User>(
+                " UPDATE users SET provider = $1 WHERE email = $2 RETURNING *;",
+                [profile.id, email],
+              );
+              user = update.rows[0];
+            }
           }
 
           // LOGIN (JWT)

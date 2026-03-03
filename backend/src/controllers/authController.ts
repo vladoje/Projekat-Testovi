@@ -6,12 +6,13 @@ export interface User {
   category?: string;
   rijesio_testova: number;
   created_at: string;
+  provider: string;
 }
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import { query } from "../db/db";
 import bcrypt from "bcrypt";
-import nodemailer from "nodemailer";
+
 import isEmail from "validator/lib/isEmail";
 import generateStarterProgress from "../utils/starterProgress";
 import sgMail from "@sendgrid/mail";
@@ -26,7 +27,9 @@ export async function login(req: Request, res: Response) {
     ]);
     const user: User = result.rows[0];
     if (!user) return res.status(401).send("Invalid credentials");
-
+    if (user.provider && !user.password_hash) {
+      return res.status(401).send("Please create your password");
+    }
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) return res.status(401).send("Invalid credentials");
     const payload = { userId: user.id };
@@ -103,15 +106,7 @@ export async function forgotPassword(req: Request, res: Response) {
     "INSERT INTO reset_tokens (token, user_id, expires_at) VALUES($1, $2, $3)",
     [token, emailTakenn.id, expiresAt],
   );
-  const transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false,
-    auth: {
-      user: "felipa.hackett39@ethereal.email",
-      pass: "6X7ndS69sMjeWQbAeN",
-    },
-  });
+
   // Send an email using async/await
   try {
     await sgMail.send({
@@ -133,38 +128,49 @@ export async function forgotPassword(req: Request, res: Response) {
   }
   res.send({ message: "Check your email for reseting password" });
 }
-
 export async function resetPassword(req: Request, res: Response) {
   const { token, newPassword } = req.body;
+
   if (!token || !newPassword) {
-    console.log("1");
     return res.status(400).send("Bad request body empty");
   }
+
   if (newPassword.length < 8) {
-    console.log("2");
     return res.status(400).send("New password too short");
   }
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
-  //provjeri token
-  const result = await query(
-    "SELECT * FROM reset_tokens WHERE token=$1 AND expires_at > NOW()",
-    [token],
-  );
-  if (!result.rows[0]) {
-    console.log("3");
-    return res.status(400).send("Invalid or expired token");
-  }
-  //nabavi userId
-  const userId = result.rows[0].user_id;
-  if (!userId) {
-    console.log("4");
-    return res.status(400).send("Invalid or expired token");
-  }
-  await query("UPDATE users SET password_hash=$1 WHERE id=$2", [
-    hashedPassword,
-    userId,
-  ]);
-  await query("DELETE FROM reset_tokens WHERE token=$1", [token]);
 
-  res.send({ message: "Password succesfully changed" });
+  try {
+    // Ako je token istekao, ovdje kod "puca" i skače direktno u catch blok
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
+      userId: number;
+    };
+    const userId = decoded.userId;
+
+    // Provjera u bazi (da spriječimo ponovno korištenje istog tokena)
+    const r = await query(
+      "SELECT * FROM reset_tokens WHERE token=$1 AND user_id=$2",
+      [token, userId],
+    );
+
+    if (r.rows.length === 0) {
+      return res.status(400).send("Invalid or already used token");
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update lozinke
+    await query("UPDATE users SET password_hash=$1 WHERE id=$2", [
+      hashedPassword,
+      userId,
+    ]);
+
+    // Brisanje iskorištenog tokena
+    await query("DELETE FROM reset_tokens WHERE token=$1", [token]);
+
+    res.send({ message: "Password successfully changed" });
+  } catch (error) {
+    // Ovdje hvatamo istekli ili nevažeći token
+    console.error("Reset password error:", error);
+    return res.status(400).send("Your reset link has expired or is invalid");
+  }
 }
