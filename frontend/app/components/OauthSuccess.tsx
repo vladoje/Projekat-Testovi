@@ -5,6 +5,7 @@ import { useUser } from "~/userStore";
 export default function OauthSuccess() {
   useMe();
   const user = useUser().user;
+  console.log(user);
   const navigate = useNavigate();
   if (user?.username) navigate("/");
 

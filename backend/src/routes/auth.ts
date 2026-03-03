@@ -17,8 +17,13 @@ router.get(
   passport.authenticate("google", { session: false }),
   (req: any, res) => {
     const { token } = req.user;
-
-    res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
+    res.cookie("token", token, {
+      httpOnly: true, // JS ne može da vidi token
+      secure: true, // samo HTTPS
+      sameSite: "none", // cross-site, HTTPS
+      maxAge: 90 * 24 * 60 * 60 * 1000, // 90 dana
+    });
+    res.redirect(`${process.env.FRONTEND_URL}/oauth-success`);
   },
 );
 router.get(
