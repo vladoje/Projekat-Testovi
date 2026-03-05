@@ -12,11 +12,9 @@ import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import { query } from "../db/db";
 import bcrypt from "bcrypt";
-
 import isEmail from "validator/lib/isEmail";
-import generateStarterProgress from "../utils/starterProgress";
-import sgMail from "@sendgrid/mail";
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+import { sendResetEmail, setAuthCookie } from "../utils/authHelpers";
+
 export async function login(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
@@ -32,16 +30,7 @@ export async function login(req: Request, res: Response) {
     }
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) return res.status(401).send("Invalid credentials");
-    const payload = { userId: user.id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET!, {
-      expiresIn: "90d",
-    });
-    res.cookie("token", token, {
-      httpOnly: true, // JS ne može da vidi token
-      secure: true, // samo HTTPS
-      sameSite: "none", // cross-site, HTTPS
-      maxAge: 90 * 24 * 60 * 60 * 1000, // 90 dana
-    });
+    setAuthCookie(res, user.id);
     res.send({ message: "Login succesfull" });
   } catch (e) {
     console.log(e);
@@ -71,17 +60,7 @@ export async function register(req: Request, res: Response) {
     );
     const createdUser: User = newUser.rows[0];
     if (!createdUser) return res.status(401).send("DB didnt create a new user");
-    const payload = { userId: createdUser.id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET!, {
-      expiresIn: "90d",
-    });
-    await generateStarterProgress(createdUser.id);
-    res.cookie("token", token, {
-      httpOnly: true, // JS ne može da vidi token
-      secure: true, // samo HTTPS
-      sameSite: "none", // cross-site, HTTPS
-      maxAge: 90 * 24 * 60 * 60 * 1000, // 90 dana
-    });
+    setAuthCookie(res, createdUser.id);
     res.send({ message: "Register succesfull" });
   } catch (e) {
     console.log(e);
@@ -109,17 +88,7 @@ export async function forgotPassword(req: Request, res: Response) {
 
   // Send an email using async/await
   try {
-    await sgMail.send({
-      to: email, // email korisnika kojem šalješ link
-      from: "vladorakic07@gmail.com", // tvoj validni verified sender email na SendGrid-u
-      subject: "Reset your password",
-      html: `
-      <p>Hello,</p>
-      <pKliknite dugme ispod da biste promjenili vasu lozinku:</p>
-      <a href="https://projekat-testovi-fir1.vercel.app/reset-password?token=${token}" style="display:inline-block; padding:10px 20px; background-color:#007bff; color:white; text-decoration:none; border-radius:5px;">Reset Password</a>
-      <p>Ako niste zatrazili promjenu sifre, mozete ignorisati onaj email.</p>
-    `,
-    });
+    await sendResetEmail(email, token);
 
     console.log("Email sent successfully");
   } catch (err) {

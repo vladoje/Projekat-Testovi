@@ -1,9 +1,4 @@
-/*
-
-Priority = (Urgency times 2) + (Weakness times 1.5) + Difficulty
-
-
-*/
+import { query } from "../db/db";
 export interface pitanjeDB {
   question_progress_id: number;
   question_id: number;
@@ -45,3 +40,33 @@ export function priority(q: pitanjeDB, rijesioTestova: number) {
 
   return score;
 }
+
+export async function getQuestionsByIds(ids: number[]) {
+  const { rows } = await query(
+    `SELECT * FROM questions WHERE question_id = ANY($1)`,
+    [ids],
+  );
+  return rows;
+}
+export function splitQuestionsByType(rows: pitanjeDB[], category: string) {
+  const suvaPitanjaKorisnika: pitanjeDB[] = [];
+  const znakoviKorisnika: pitanjeDB[] = [];
+  const raskrsniceKorisnika: pitanjeDB[] = [];
+
+  for (const r of rows) {
+    if (!r.question_categories.includes(category)) continue;
+
+    if (r.question_type === "znak") znakoviKorisnika.push(r);
+    else if (r.question_type === "raskrsnica") raskrsniceKorisnika.push(r);
+    else if (r.question_type === "pitanje") suvaPitanjaKorisnika.push(r);
+  }
+
+  return { suvaPitanjaKorisnika, znakoviKorisnika, raskrsniceKorisnika };
+}
+
+/*
+
+Priority = (Urgency times 2) + (Weakness times 1.5) + Difficulty
+
+
+*/

@@ -1,9 +1,8 @@
 import { Router } from "express";
-import {
-  generateOneTypeTest,
-  generateTest,
-  handleResults,
-} from "../controllers/testController";
+
+import { generateTest } from "../controllers/testControllers/generateTest";
+import { generateOneTypeTest } from "../controllers/testControllers/generateOneTypeTest";
+import { handleResults } from "../controllers/testControllers/handleResults";
 
 const router = Router();
 
