@@ -19,7 +19,7 @@ function Izaberi({
 }: {
   trenutnoPitanje: pitanje;
   answers: string[];
-  setAnswers: Function;
+  setAnswers?: Function;
 }) {
   return (
     <div className="space-y-3">
@@ -28,6 +28,7 @@ function Izaberi({
         text={trenutnoPitanje?.answer_1_text || ""}
         checked={answers.includes("a")}
         onChange={() =>
+          setAnswers &&
           setAnswers((a: string[]) =>
             a.includes("a") ? a.filter((ans) => ans !== "a") : [...a, "a"],
           )
@@ -38,6 +39,7 @@ function Izaberi({
         text={trenutnoPitanje?.answer_2_text || ""}
         checked={answers.includes("b")}
         onChange={() =>
+          setAnswers &&
           setAnswers((a: string[]) =>
             a.includes("b") ? a.filter((ans) => ans !== "b") : [...a, "b"],
           )
@@ -49,6 +51,7 @@ function Izaberi({
           text={trenutnoPitanje.answer_3_text}
           checked={answers.includes("c")}
           onChange={() =>
+            setAnswers &&
             setAnswers((a: string[]) =>
               a.includes("c") ? a.filter((ans) => ans !== "c") : [...a, "c"],
             )
@@ -61,6 +64,7 @@ function Izaberi({
           text={trenutnoPitanje.answer_4_text}
           checked={answers.includes("d")}
           onChange={() =>
+            setAnswers &&
             setAnswers((a: string[]) =>
               a.includes("d") ? a.filter((ans) => ans !== "d") : [...a, "d"],
             )
@@ -73,6 +77,7 @@ function Izaberi({
           text={trenutnoPitanje.answer_5_text}
           checked={answers.includes("e")}
           onChange={() =>
+            setAnswers &&
             setAnswers((a: string[]) =>
               a.includes("e") ? a.filter((ans) => ans !== "e") : [...a, "e"],
             )

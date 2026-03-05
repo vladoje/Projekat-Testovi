@@ -1,56 +1,64 @@
-/* S Z R P */
-// const brojSuvihPitanja = [
-//   { kategorija: "A", br: "309" },
-//   { kategorija: "B", br: "367" },
-//   { kategorija: "C", br: "393" },
-//   { kategorija: "D", br: "353" },
-//   { kategorija: "T", br: "260" },
-// ];
-// const brojZnakova = "109";
-// const brojRaskrsnica = "110";
-// const brojPrvePomoci = "100";
-
-// const brojKategorijaSuvihPitanja = [
-//   { kategorija: "A", br: "16" },
-//   { kategorija: "B", br: "19" },
-//   { kategorija: "C", br: "20" },
-//   { kategorija: "D", br: "18" },
-//   { kategorija: "T", br: "13" },
-// ];
-// const brojKategorijaZnakova = "11";
-// const brojKategorijaRaskrsnica = "11";
-// const brojKategorijaPrvePomoci = "10";
-
 export function getCategory(a: string) {
   return `${a} Kategoriju`;
 }
-// export function getBrPitanja(a: string, b?: string) {
-//   if (b) {
-//     //a=S
-//     return brojSuvihPitanja.find((pitanje) => pitanje.kategorija === b)?.br;
-//   } else {
-//     return a === "Z"
-//       ? brojZnakova
-//       : a === "R"
-//         ? brojRaskrsnica
-//         : a === "P"
-//           ? brojPrvePomoci
-//           : "1";
-//   }
-// }
-// export function getBrCategory(a: string, b?: string) {
-//   if (b) {
-//     //a=S
-//     return brojKategorijaSuvihPitanja.find(
-//       (pitanje) => pitanje.kategorija === b,
-//     )?.br;
-//   } else {
-//     return a === "Z"
-//       ? brojKategorijaZnakova
-//       : a === "R"
-//         ? brojKategorijaRaskrsnica
-//         : a === "P"
-//           ? brojKategorijaPrvePomoci
-//           : "1";
-//   }
-// }
+export function getBodova(rjesenja: boolean[], cat: string, duzina: number) {
+  let brojBodeva = 0;
+  let maxBodova = duzina;
+  let brSuvih;
+  let brZnakova;
+  let brRaskrsnica;
+  switch (cat) {
+    case "A":
+      brSuvih = rjesenja.slice(0, 20).filter(Boolean).length;
+      brZnakova = rjesenja.slice(20, 30).filter(Boolean).length;
+      brRaskrsnica = rjesenja.slice(30, 40).filter(Boolean).length;
+      brojBodeva = brSuvih * 2 + brZnakova * 3 + brRaskrsnica * 5;
+      maxBodova = 120;
+      break;
+    case "B":
+      brSuvih = rjesenja.slice(0, 20).filter(Boolean).length;
+      brZnakova = rjesenja.slice(20, 30).filter(Boolean).length;
+      brRaskrsnica = rjesenja.slice(30, 40).filter(Boolean).length;
+      brojBodeva = brSuvih * 2 + brZnakova * 3 + brRaskrsnica * 5;
+      maxBodova = 120;
+      break;
+    case "C":
+      brSuvih = rjesenja.slice(0, 30).filter(Boolean).length;
+      brZnakova = rjesenja.slice(30, 40).filter(Boolean).length;
+      brRaskrsnica = rjesenja.slice(40, 50).filter(Boolean).length;
+      brojBodeva = brSuvih * 2 + brZnakova * 3 + brRaskrsnica * 5;
+      maxBodova = 140;
+      break;
+    case "D":
+      brSuvih = rjesenja.slice(0, 30).filter(Boolean).length;
+      brZnakova = rjesenja.slice(30, 40).filter(Boolean).length;
+      brRaskrsnica = rjesenja.slice(40, 50).filter(Boolean).length;
+      brojBodeva = brSuvih * 2 + brZnakova * 3 + brRaskrsnica * 5;
+      maxBodova = 140;
+      break;
+    case "T":
+      brSuvih = rjesenja.slice(0, 20).filter(Boolean).length;
+      brZnakova = rjesenja.slice(20, 30).filter(Boolean).length;
+      brRaskrsnica = rjesenja.slice(30, 40).filter(Boolean).length;
+      brojBodeva = brSuvih * 2 + brZnakova * 3 + brRaskrsnica * 5;
+      maxBodova = 120;
+      break;
+    case "S":
+      brojBodeva = rjesenja.filter(Boolean).length;
+      maxBodova = duzina;
+      break;
+    case "Z":
+      brojBodeva = rjesenja.filter(Boolean).length;
+      maxBodova = duzina;
+      break;
+    case "R":
+      brojBodeva = rjesenja.filter(Boolean).length;
+      maxBodova = duzina;
+      break;
+    case "P":
+      brojBodeva = rjesenja.filter(Boolean).length;
+      maxBodova = duzina;
+      break;
+  }
+  return [brojBodeva, maxBodova];
+}

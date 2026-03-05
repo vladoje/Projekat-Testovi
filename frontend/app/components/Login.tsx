@@ -1,57 +1,10 @@
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import Input from "./Input";
-import { useState } from "react";
-import { useUser } from "~/userStore";
-import toast from "react-hot-toast";
-function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-function isValidPassword(password: string) {
-  return password.length >= 8; // minimalno 8 znakova
-}
+import { useLogin } from "~/hooks/useLogin";
+import { MdErrorOutline } from "react-icons/md";
 export default function Login() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [err, setErr] = useState("");
-
-  async function handleClick() {
-    setErr("");
-    if (!isValidEmail(email)) {
-      toast.error("Email nije validan");
-      setErr("Email nije validan");
-      return;
-    }
-    if (!isValidPassword(password)) {
-      toast.error("Sifra mora sadrzati minimalno 8 karaktera");
-      setErr("Sifra mora sadrzati minimalno 8 karaktera");
-      return;
-    }
-    const loginRes = await fetch(
-      "https://projekat-testovi.onrender.com/auth/login",
-      {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      },
-    );
-
-    if (!loginRes.ok) {
-      setErr("Email ili lozinka ne odgovaraju");
-      toast.error("Email ili lozinka nisu tačni!");
-      return;
-    }
-
-    const meRes = await fetch("https://projekat-testovi.onrender.com/user/me", {
-      credentials: "include",
-    });
-
-    const user = await meRes.json();
-    useUser.getState().setUser(user);
-    toast.success("Uspješno ste se ulogovali!");
-    navigate("/");
-  }
+  const { email, setEmail, password, setPassword, err, handleClick } =
+    useLogin();
   function handleGoogleLogin() {
     window.location.href = "https://projekat-testovi.onrender.com/auth/google";
   }
@@ -69,22 +22,17 @@ export default function Login() {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-10 px-8 shadow-lg rounded-3xl border border-gray-200 space-y-6">
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide ml-1 mb-2">
-              E-mail
-            </label>
             <Input
+              label="E-mail"
               state={email}
               setState={setEmail}
               type="email"
               placeholder="someone@example.com"
             />
           </div>
-
           <div>
-            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide ml-1 mb-2">
-              Lozinka
-            </label>
             <Input
+              label="Lozinka"
               state={password}
               setState={setPassword}
               type="password"
@@ -93,22 +41,9 @@ export default function Login() {
           </div>
 
           {err && (
-            <div className="flex items-center text-red-600 text-sm font-medium mt-1 ml-1">
-              <svg
-                className="w-4 h-4 mr-1"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              {err}
+            <div className="flex items-center gap-1.5 text-red-600 text-sm font-medium mt-1 ml-1">
+              <MdErrorOutline />
+              <span>{err}</span>
             </div>
           )}
 

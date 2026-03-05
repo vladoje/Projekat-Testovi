@@ -1,113 +1,36 @@
-import { useQuery } from "@tanstack/react-query";
 import Spinner from "~/components/Spinner";
-import { getQuestions } from "~/helpers/questions";
 import { useMe } from "~/helpers/useMe";
-
 import Header from "~/components/Header";
-import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
-import { useUser } from "~/userStore";
-export interface userPitanje {
-  question_progress_id: number;
-  question_id: number;
-  recommended_until: number;
-  consecutive_correct: number;
-  last_seen_at: number;
-  question_type: string;
-  times_seen: number;
-  last_result: boolean;
-  question_categories: string;
-  question_text: string;
-}
+import { QuestionCard } from "~/components/QuestionCard";
+import { useProgress, type userPitanje } from "~/hooks/useProgress";
+import {
+  FilterButtons,
+  SearchProgress,
+  SelectOrder,
+} from "~/components/ProgressFilters";
+
 function UserProgress() {
   const { loading } = useMe();
-  const { data, isPending, isError } = useQuery({
-    queryKey: ["question_progress"],
-    queryFn: getQuestions,
-    staleTime: 1000 * 60 * 60,
-  });
-  const questions: userPitanje[] = data?.questions ?? [];
-
-  const userCategories = useUser().user?.category;
-  const [selectedType, setSelectedType] = useState<string>("all");
-  const [sort, setSort] = useState<string>("k");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [visibleCount, setVisibleCount] = useState(5);
-  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
-  const questionTypes = ["all", "pitanje", "znak", "raskrsnica", "pomoc"];
-
-  // Filter and search logic
-  const filteredQuestions = useMemo(() => {
-    let filtered = questions ?? [];
-    filtered = filtered.filter((q: userPitanje) =>
-      q.question_categories
-        .split(",")
-        .some((cat) => userCategories?.includes(cat)),
-    );
-    if (selectedType !== "all") {
-      filtered = filtered.filter(
-        (q: userPitanje) => q.question_type === selectedType,
-      );
-    }
-
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter((q: userPitanje) =>
-        q.question_text.toLowerCase().includes(query),
-      );
-    }
-    switch (sort) {
-      case "k": {
-        const order = ["pitanje", "znak", "raskrsnica", "pomoc"];
-        filtered = [...filtered].sort((a, b) => {
-          const res =
-            order.indexOf(a.question_type) - order.indexOf(b.question_type);
-          return sortDir === "asc" ? res : -res;
-        });
-        break;
-      }
-
-      case "a": {
-        filtered = [...filtered].sort((a, b) => {
-          const res = a.question_text.localeCompare(b.question_text);
-          return sortDir === "asc" ? res : -res;
-        });
-        break;
-      }
-
-      case "t": {
-        filtered = [...filtered].sort((a, b) => {
-          const res = a.consecutive_correct - b.consecutive_correct;
-          return sortDir === "asc" ? res : -res;
-        });
-        break;
-      }
-
-      case "n": {
-        filtered = [...filtered].sort((a, b) => {
-          const res = Number(a.last_result) - Number(b.last_result);
-          return sortDir === "asc" ? res : -res;
-        });
-        break;
-      }
-
-      case "v": {
-        filtered = [...filtered].sort((a, b) => {
-          const res = a.times_seen - b.times_seen;
-          return sortDir === "asc" ? res : -res;
-        });
-        break;
-      }
-    }
-    return filtered;
-  }, [questions, selectedType, searchQuery, userCategories, sort, sortDir]);
-
-  const visibleQuestions = filteredQuestions.slice(0, visibleCount);
-  const hasMore = visibleCount < filteredQuestions.length;
+  const {
+    sortDir,
+    isPending,
+    isError,
+    setSortDir,
+    visibleCount,
+    setVisibleCount,
+    searchQuery,
+    setSearchQuery,
+    sort,
+    setSort,
+    selectedType,
+    setSelectedType,
+    visibleQuestions,
+    hasMore,
+    filteredQuestions,
+  } = useProgress();
 
   if (loading || isPending) return <Spinner />;
   if (isError) return <div>Error loading questions</div>;
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -115,74 +38,22 @@ function UserProgress() {
 
       <main className="px-4 py-4 pb-8">
         {/* Search Bar */}
-        <div className="mb-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Pretraži pitanja..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="text-gray-700 w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-        </div>
+        <SearchProgress
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
 
         {/* Filter Buttons */}
-        <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
-          {questionTypes.map((type) => (
-            <button
-              key={type}
-              onClick={() => setSelectedType(type)}
-              className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition-colors ${
-                selectedType === type
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-              }`}
-            >
-              {type === "all"
-                ? "Sve"
-                : type.charAt(0).toUpperCase() + type.slice(1)}
-            </button>
-          ))}
-        </div>
-        <div className="mb-4 flex gap-2">
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            className="
-      flex-1
-      bg-white border border-gray-300
-      rounded-lg px-3 py-2.5
-      text-sm text-gray-700
-      focus:outline-none focus:ring-2 focus:ring-blue-500
-    "
-          >
-            <option value="k">Po kategoriji</option>
-            <option value="a">Abecedno</option>
-            <option value="t">Broj zaredom tačnih</option>
-            <option value="n">Broj grešaka</option>
-            <option value="v">Puta viđeno</option>
-          </select>
-
-          <button
-            type="button"
-            onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
-            className="
-    min-w-22.5
-    px-3 py-2.5
-    rounded-lg
-    border border-gray-300
-    bg-white
-    text-sm font-semibold
-    text-gray-700
-    hover:bg-gray-50
-    flex items-center justify-center
-  "
-          >
-            {sortDir === "asc" ? "↑ ASC" : "↓ DESC"}
-          </button>
-        </div>
+        <FilterButtons
+          selectedType={selectedType}
+          setSelectedType={setSelectedType}
+        />
+        <SelectOrder
+          sort={sort}
+          setSort={setSort}
+          setSortDir={setSortDir}
+          sortDir={sortDir}
+        />
         {/* Results Count */}
         <div className="mb-3 text-sm text-gray-600">
           {filteredQuestions?.length}{" "}
@@ -218,116 +89,6 @@ function UserProgress() {
           )}
         </div>
       </main>
-    </div>
-  );
-}
-
-interface QuestionCardProps {
-  question: userPitanje;
-}
-
-export function QuestionCard({ question }: QuestionCardProps) {
-  // Calculate flag based on question data
-  const getFlag = () => {
-    if (question.times_seen === 0) return "new";
-    if (question.consecutive_correct >= 3) return "mastered";
-    if (question.consecutive_correct === 0 && question.times_seen >= 3)
-      return "potential threat";
-    return null;
-  };
-
-  const flag = getFlag();
-  const hasImage =
-    question.question_type === "znak" ||
-    question.question_type === "raskrsnica";
-
-  // Calculate correct and incorrect counts (mock logic based on data)
-  const correctCount = question.consecutive_correct;
-  const incorrectCount = Number(!question.last_result);
-
-  return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-3">
-      <div className="flex justify-between items-start mb-2">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs text-gray-500 uppercase tracking-wide">
-              {question.question_type}
-            </span>
-            {flag && (
-              <span
-                className={`text-xs px-2 py-0.5 rounded-full ${
-                  flag === "new"
-                    ? "bg-blue-100 text-blue-700"
-                    : flag === "mastered"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                }`}
-              >
-                {flag}
-              </span>
-            )}
-          </div>
-          <p className="text-sm text-gray-900 leading-relaxed">
-            {question.question_text}
-          </p>
-        </div>
-      </div>
-
-      {hasImage && (
-        <div className="my-3">
-          <img
-            loading="lazy"
-            src={`/pitanja-slike/${question.question_id}.webp`}
-            className="
-    w-full
-    max-h-64
-    object-contain
-    rounded-md
-  "
-          />
-        </div>
-      )}
-
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-        <div className="flex items-center gap-3">
-          {/* Correct/Incorrect dots */}
-          <div className="flex items-center gap-1.5">
-            <div className="flex items-center gap-1">
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-              <span className="text-xs text-gray-600">{correctCount}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <span className="text-xs text-gray-600">{incorrectCount}</span>
-            </div>
-          </div>
-
-          {/* Times seen */}
-          <div className="flex items-center gap-1 text-xs text-gray-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-            <span>{question.times_seen}x</span>
-          </div>
-        </div>
-
-        {question.question_categories && (
-          <span className="text-xs text-gray-400">
-            {question.question_categories}
-          </span>
-        )}
-      </div>
     </div>
   );
 }

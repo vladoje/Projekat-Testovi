@@ -7,7 +7,7 @@ interface RjesenjaState {
   zapamtiOdgovor: (i: number, choisesMade?: string[]) => void;
   resetState: () => void;
 }
-interface ChoisesState {
+export interface ChoisesState {
   i: number;
   checkedAnswers?: string[];
 }

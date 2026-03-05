@@ -42,5 +42,3 @@ export function OptionCard({
     </div>
   );
 }
-
-// Tvoje funkcije ostaju iste, samo ih exportuj ili drži van komponente
