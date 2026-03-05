@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router";
 import Input from "./Input";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { isValidEmail } from "./Register";
+import { isValidEmail } from "~/hooks/useRegister";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();

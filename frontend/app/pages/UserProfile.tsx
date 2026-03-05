@@ -7,7 +7,8 @@ import Modal from "~/components/Modal";
 import { useProfile } from "~/hooks/useProfile";
 import { SelectCategory } from "~/components/RegisterHelpers";
 import Input from "~/components/Input";
-import { ProfileActions, UserAvatar, Window } from "~/components/UserAvatar";
+import { UserAvatar } from "~/components/UserAvatar";
+import { ProfileActions, Window } from "~/components/ProfileActions";
 
 function UserProfile() {
   const { loading } = useMe();

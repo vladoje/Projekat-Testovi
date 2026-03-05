@@ -13,7 +13,7 @@ function Test() {
   const location = useLocation();
   const cat = location.pathname.split("/").at(3) || "";
 
-  const { i, setI, answers, setAnswers, handleNext } = useTest();
+  const { i, setI, answers, setAnswers, handleNext, handleSelect } = useTest();
   const { trenutnoPitanje, loading } = useTestData(i);
   const pitanja = useTestStore().pitanja;
 
@@ -23,7 +23,13 @@ function Test() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <Header />
 
-      <Kockice i={i} pitanja={pitanja} />
+      <Kockice
+        i={i}
+        setI={setI}
+        handleSelect={handleSelect}
+        trenutnoPitanje={trenutnoPitanje}
+        pitanja={pitanja}
+      />
 
       <main className="max-w-md mx-auto px-6 py-8">
         {/* PITANJE */}

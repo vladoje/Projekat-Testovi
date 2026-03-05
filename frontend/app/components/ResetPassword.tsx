@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router";
 import Input from "./Input";
-import { isValidPassword } from "./Register";
 import toast from "react-hot-toast";
+import { isValidPassword } from "~/hooks/useRegister";
 
 function ResetPassword() {
   const [searchParams] = useSearchParams();

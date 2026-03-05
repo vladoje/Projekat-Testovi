@@ -1,7 +1,19 @@
 import { useEffect, useRef } from "react";
 import type { pitanje } from "~/hooks/useTestData";
 
-export function Kockice({ i, pitanja }: { i: number; pitanja: pitanje[] }) {
+export function Kockice({
+  i,
+  setI,
+  pitanja,
+  handleSelect,
+  trenutnoPitanje,
+}: {
+  i: number;
+  setI: Function;
+  pitanja: pitanje[];
+  handleSelect: Function;
+  trenutnoPitanje: pitanje;
+}) {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -22,6 +34,10 @@ export function Kockice({ i, pitanja }: { i: number; pitanja: pitanje[] }) {
       >
         {pitanja.map((p, index) => (
           <div
+            onClick={() => {
+              handleSelect(trenutnoPitanje);
+              setI(index + 1);
+            }}
             key={p.question_id}
             ref={(el) => {
               itemsRef.current[index + 1] = el;

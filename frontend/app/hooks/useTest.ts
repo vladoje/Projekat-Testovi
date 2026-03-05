@@ -52,7 +52,17 @@ function useTest() {
       }
     }
   };
-  return { i, setI, answers, setAnswers, handleNext };
+  function handleSelect(trenutnoPitanje: pitanje) {
+    const tacno = isTrue(trenutnoPitanje?.correct_answer || [], answers || []);
+    if (ucenje && !tacno) {
+      toast.error("Niste odgovorili tacno na ovo pitanje", { duration: 1000 });
+    } else {
+      setRjesenja(tacno);
+      zapamtiOdgovor(i, answers);
+      setAnswers([]);
+    }
+  }
+  return { i, setI, answers, setAnswers, handleNext, handleSelect };
 }
 
 export default useTest;
