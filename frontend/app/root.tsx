@@ -12,6 +12,7 @@ import "./app.css";
 import { useEffect, useState } from "react";
 import { Toaster as HotToaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { DarkModeProvider } from "./context/DarkModeContext";
 const queryClient = new QueryClient();
 // Komponenta koja se renderuje samo na klijentu
 function Toaster() {
@@ -59,9 +60,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Outlet />
-    </QueryClientProvider>
+    <DarkModeProvider>
+      <QueryClientProvider client={queryClient}>
+        <Outlet />
+      </QueryClientProvider>
+    </DarkModeProvider>
   );
 }
 

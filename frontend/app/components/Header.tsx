@@ -3,8 +3,13 @@ import { FaAppleWhole, FaMoon } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
 import { IoSunny } from "react-icons/io5";
 import { GiStairsGoal } from "react-icons/gi";
+import { useDarkMode } from "~/context/DarkModeContext";
 function Header() {
-  const darkMode = true; // Kasnije ćeš ovo vezati na state
+  const darkModeContext = useDarkMode();
+  if (!darkModeContext) {
+    throw new Error("Header must be used within DarkModeProvider");
+  }
+  const { isDarkMode, toggleDarkMode } = darkModeContext;
 
   return (
     // "sticky" drži header na vrhu dok skroluješ, "backdrop-blur" pravi onaj Apple-ov efekat stakla
@@ -37,8 +42,11 @@ function Header() {
           >
             <GiStairsGoal className="text-2xl" />
           </Link>
-          <button className="p-2.5 cursor-pointer text-amber-500 dark:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all active:rotate-45">
-            {darkMode ? (
+          <button
+            onClick={toggleDarkMode}
+            className="p-2.5 cursor-pointer text-amber-500 dark:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all active:rotate-45"
+          >
+            {isDarkMode ? (
               <FaMoon className="text-xl" />
             ) : (
               <IoSunny className="text-xl" />
