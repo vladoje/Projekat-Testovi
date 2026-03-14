@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router";
 import Header from "~/components/Header";
+import { useDarkMode } from "~/context/DarkModeContext";
 import { lekcije } from "~/data";
 
 function SelectLekcija() {
@@ -12,15 +13,17 @@ function SelectLekcija() {
     if (prvaPomoc) return cat.label === "Prva pomoc";
     return cat.label.startsWith(category);
   });
-
+  const { isDarkMode } = useDarkMode();
   return (
-    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f172a] pb-10">
+    <div
+      className={`min-h-screen ${!isDarkMode ? " bg-background text-text border-border" : "bg-background-dark text-text-dark border-border-dark"} pb-10`}
+    >
       <Header />
 
       <main className="max-w-md mx-auto px-6 pt-8">
         {/* NASLOVNA SEKCIJA */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+          <h1 className="text-3xl font-black  tracking-tight">
             {category === "S"
               ? "Suva pitanja"
               : category === "Z"
@@ -29,8 +32,8 @@ function SelectLekcija() {
                   ? "Raskrsnice"
                   : "Prva Pomoc"}
           </h1>
-          <div className="mt-4 p-4 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100 dark:border-indigo-900/20">
-            <p className="text-slate-600 dark:text-slate-400 text-sm italic leading-relaxed">
+          <div className="mt-4 p-4  rounded-2xl  ">
+            <p className=" text-sm italic leading-relaxed">
               Odradite test od 20{" "}
               {category === "S"
                 ? "cisto teoretskih pitanja"
@@ -48,15 +51,17 @@ function SelectLekcija() {
         <div className="space-y-4">
           <Link
             to={`/test/lekcija/${prvaPomoc ? "P" : category}/test`}
-            className="block p-5 bg-slate-900 dark:bg-indigo-600 rounded-3xl shadow-lg active:scale-[0.97] transition-all"
+            className={`block p-5 border-2 ${!isDarkMode ? " bg-primary border-border " : "bg-primary-dark  border-border"} rounded-3xl shadow-lg active:scale-[0.97] transition-all`}
           >
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-2xl">
                 ⏱️
               </div>
               <div>
-                <h2 className="text-lg font-bold text-white">Ispitni mod</h2>
-                <p className="text-slate-400 dark:text-indigo-100 text-xs mt-0.5">
+                <h2 className="text-lg font-bold text-text-dark">
+                  Ispitni mod
+                </h2>
+                <p className="text-text-dark text-xs mt-0.5">
                   Izmjeri svoje znanje pod pritiskom.
                 </p>
               </div>
@@ -65,17 +70,17 @@ function SelectLekcija() {
 
           <Link
             to={`/test/lekcija/${prvaPomoc ? "P" : category}/ucenje`}
-            className="block p-5 bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 rounded-3xl active:scale-[0.97] transition-all"
+            className={`block p-5 border-2 ${!isDarkMode ? " bg-primary border-border " : "bg-primary-dark  border-border"} rounded-3xl active:scale-[0.97] transition-all`}
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-2xl">
+              <div className="w-12 h-12 bg-white/10  rounded-2xl flex items-center justify-center text-2xl">
                 📖
               </div>
               <div>
-                <h2 className="text-lg font-bold text-slate-800 dark:text-white">
+                <h2 className="text-lg font-bold text-text-dark">
                   Slobodno učenje
                 </h2>
-                <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">
+                <p className="text-text-dark text-xs mt-0.5">
                   Pređi sva pitanja, jedno po jedno.
                 </p>
               </div>

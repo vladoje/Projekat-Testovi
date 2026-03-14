@@ -9,11 +9,12 @@ import { updateQuestions } from "~/helpers/questions";
 import type { pitanje } from "~/hooks/useTestData";
 import { Polozio } from "~/components/Polozio";
 import { RjesenoPitanje } from "~/components/RjesenoPitanje";
+import { useDarkMode } from "~/context/DarkModeContext";
 
 function Results() {
   const { loading } = useMe("results");
   const queryClient = useQueryClient();
-
+  const { isDarkMode } = useDarkMode();
   const mutation = useMutation({
     mutationFn: (args: { pitanja: pitanje[]; rjesenja: boolean[] }) =>
       updateQuestions(args.pitanja, args.rjesenja),
@@ -32,16 +33,16 @@ function Results() {
   if (loading || mutation.isPending) return <Spinner />;
   if (mutation.isError) return <div>Error: {mutation.error.message}</div>;
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-20">
+    <div
+      className={`min-h-screen ${!isDarkMode ? " bg-background text-text border-border" : "bg-background-dark text-text-dark border-border-dark"} pb-20`}
+    >
       <Header />
 
       <main className="max-w-2xl mx-auto px-6 pt-10">
         {/* GLAVNI SCORE CARD */}
         <Polozio rjesenja={rjesenja} duz={pitanja.length} />
         {/* DETALJAN PREGLED PITANJA */}
-        <h3 className="text-xl font-black text-slate-800 dark:text-white mb-6">
-          Pregled grešaka
-        </h3>
+        <h3 className="text-xl font-black mb-4 ">Pregled grešaka</h3>
         <div className="space-y-12">
           {pitanja.map((pitanje, idx) => {
             const isCorrect = rjesenja[idx];

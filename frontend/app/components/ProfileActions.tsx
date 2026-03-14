@@ -3,13 +3,15 @@ import { FaShieldHalved } from "react-icons/fa6";
 import { Link } from "react-router";
 import Modal from "./Modal";
 import { useModal } from "~/hooks/useModal";
+import { useDarkMode } from "~/context/DarkModeContext";
 
 export function CloseButton() {
+  const { isDarkMode } = useDarkMode();
   const { close } = useModal();
   return (
     <button
       onClick={close}
-      className="flex-1 px-4 py-3 text-sm font-bold text-gray-500 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+      className={`flex-1 px-4 py-3 text-sm font-bold  rounded-xl hover:bg-gray-100 transition-colors border-2 text-text-dark ${!isDarkMode ? "bg-primary border-border" : "bg-primary-dark border-background-dark"}`}
     >
       Odustani
     </button>
@@ -30,7 +32,7 @@ export function ProfileActions() {
       </Modal.Open>
       <Link
         to="/privacy-policy"
-        className="flex items-center gap-2 text-slate-400 hover:text-indigo-500 text-[10px] font-bold uppercase tracking-widest transition-colors"
+        className="flex items-center gap-2  hover:text-indigo-500 text-[10px] font-bold uppercase tracking-widest transition-colors"
       >
         <FaShieldHalved size={12} /> Politika Privatnosti
       </Link>
@@ -44,14 +46,15 @@ export function Window({
   handle: MouseEventHandler<HTMLButtonElement>;
   odjavi?: boolean;
 }) {
+  const { isDarkMode } = useDarkMode();
   return (
-    <div className="flex flex-col gap-6">
-      <h2 className="text-xl font-bold text-gray-800">
+    <div className={`flex flex-col gap-6  `}>
+      <h2 className="text-xl font-bold ">
         {odjavi
           ? " Da li ste sigurni da želite da se odjavite?"
-          : " Da li ste sigurni da želite obrisati ovaj element?"}
+          : " Da li ste sigurni da želite trajno obrisati svoj profil?"}
       </h2>
-      <p className="text-gray-500 text-sm">
+      <p className=" text-sm">
         {odjavi
           ? " Nakon odjave, moraćete ponovo da se ulogujete da biste pristupili svom nalogu."
           : " Ova akcija se ne može poništiti."}

@@ -13,18 +13,29 @@ function Header() {
 
   return (
     // "sticky" drži header na vrhu dok skroluješ, "backdrop-blur" pravi onaj Apple-ov efekat stakla
-    <header className="sticky top-0 z-50 w-full px-6 py-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <header
+      className={`sticky top-0 z-50 w-full px-6 py-4  backdrop-blur-md border-b ${!isDarkMode ? " bg-primary border-border" : " bg-primary-dark border-border-dark"}`}
+    >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* LOGO SEKCIJA */}
         <Link
           to="/"
           className="flex items-center gap-2 group transition-transform active:scale-95"
         >
-          <div className="p-2 bg-red-500 rounded-xl shadow-lg shadow-red-200 dark:shadow-none">
+          <div
+            className={`p-2 ${!isDarkMode ? "bg-secondary" : "bg-secondary-dark"} rounded-xl shadow-lg shadow-red-200 dark:shadow-none`}
+          >
             <FaAppleWhole className="text-white text-2xl group-hover:rotate-12 transition-transform" />
           </div>
-          <span className="font-black text-xl tracking-tight text-slate-800 dark:text-white uppercase">
-            Driver<span className="text-red-500">App</span>
+          <span
+            className={`font-black text-xl tracking-tight ${!isDarkMode ? "text-surface" : "text-surface-dark"} dark:text-white uppercase`}
+          >
+            Driver
+            <span
+              className={!isDarkMode ? `text-secondary` : `text-secondary-dark`}
+            >
+              App
+            </span>
           </span>
         </Link>
 
@@ -32,13 +43,13 @@ function Header() {
         <div className="flex items-center gap-3 pl-4">
           <Link
             to="/profile"
-            className="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+            className={`p-2.5 ${!isDarkMode ? "text-surface" : "text-text-dark"} hover:bg-[#81A6C6]/20 rounded-full transition-colors`}
           >
             <CgProfile className="text-2xl" />
           </Link>
           <Link
             to="/napredak"
-            className="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
+            className={`p-2.5 ${!isDarkMode ? "text-surface" : "text-text-dark"} hover:bg-[#81A6C6]/20 rounded-full transition-colors`}
           >
             <GiStairsGoal className="text-2xl" />
           </Link>

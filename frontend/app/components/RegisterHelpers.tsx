@@ -1,4 +1,6 @@
 import { Link } from "react-router";
+import { useDarkMode } from "~/context/DarkModeContext";
+import type { User } from "~/userStore";
 const CATEGORY_ORDER = ["A", "B", "C", "D", "T"] as const;
 
 export function CheckPolicy({
@@ -12,15 +14,15 @@ export function CheckPolicy({
     <div className="flex items-start px-1 py-2">
       <input
         type="checkbox"
-        className="mt-1 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+        className="mt-1 h-4 w-4 border-2  rounded"
         checked={checked}
         onChange={() => setChecked((a: boolean) => !a)}
       />
-      <p className="ml-2 text-xs text-gray-500 leading-relaxed">
+      <p className="ml-2 text-xs  leading-relaxed">
         Prihvatam{" "}
         <Link
           to="/privacy-policy/bez"
-          className="text-indigo-600 font-bold underline"
+          className=" font-bold decoration-2 underline"
         >
           Politiku Privatnosti
         </Link>{" "}
@@ -32,13 +34,19 @@ export function CheckPolicy({
 export function SelectCategory({
   categories,
   toggleCategory,
+  user,
 }: {
   categories: string[];
   toggleCategory: Function;
+  user: User;
 }) {
+  if (categories.length === 1 && categories.at(0) === "B") {
+    categories = user.category.split(",");
+  }
+  const { isDarkMode } = useDarkMode();
   return (
     <div>
-      <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest ml-1 mb-2">
+      <label className="block text-xs font-bold  uppercase tracking-widest ml-1 mb-2">
         Izaberite kategorije koje polažete
       </label>
       <div className="flex flex-wrap gap-2">
@@ -51,8 +59,12 @@ export function SelectCategory({
               onClick={() => toggleCategory(cat)}
               className={`px-3 py-1 rounded-full border ${
                 selected
-                  ? "bg-indigo-600 text-white border-indigo-600"
-                  : "bg-gray-100 text-gray-700 border-gray-300"
+                  ? !isDarkMode
+                    ? "bg-primary text-secondary"
+                    : "bg-secondary-dark"
+                  : !isDarkMode
+                    ? "bg-secondary"
+                    : " bg-primary-dark text-secondary-dark"
               } hover:scale-105 transition-transform`}
             >
               {cat}
@@ -61,9 +73,7 @@ export function SelectCategory({
         })}
       </div>
       {categories.length > 0 && (
-        <p className="mt-2 text-sm text-gray-500">
-          Odabrane: {categories.join(", ")}
-        </p>
+        <p className="mt-2 text-sm ">Odabrane: {categories.join(", ")}</p>
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import { type ReactNode } from "react";
+import { useDarkMode } from "~/context/DarkModeContext";
 
 function Input({
   type = "text",
@@ -15,18 +16,18 @@ function Input({
   state?: string;
   setState?: (state: string) => void;
 }) {
-  const stil =
-    "w-full text-base font-medium text-blue-700 border-2 border-gray-200 rounded-2xl py-3.5 px-5 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50/50 outline-none transition-all placeholder:text-gray-300";
+  const { isDarkMode } = useDarkMode();
+  const stil = `w-full text-base font-medium  border-2 ${isDarkMode ? "text-text bg-surface" : "text-text-dark bg-surface-dark"}  rounded-2xl py-3.5 px-5  outline-none transition-all placeholder:text-gray-300`;
   if (state !== undefined && setState) {
     return (
       <div>
-        <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide ml-1 mb-2">
+        <label className="block text-xs font-semibold  uppercase tracking-wide ml-1 mb-2">
           {label}
         </label>
         <input
           type={type}
           className={stil}
-          value={state ?? ""}
+          value={state || defaultValue || ""}
           onChange={(e) => {
             setState?.(e.target.value);
           }}
@@ -45,3 +46,35 @@ function Input({
 }
 
 export default Input;
+function InputDark({
+  type = "text",
+  label,
+  isDarkMode,
+  state,
+  setState,
+}: {
+  type?: string;
+  label?: ReactNode;
+  isDarkMode: Boolean;
+  state: string;
+  setState: (state: string) => void;
+}) {
+  const stil = `w-full text-base font-medium  border-2 ${!isDarkMode ? "border-border text-text bg-surface" : " border-border-dark text-text-dark bg-surface-dark"}  rounded-2xl py-3.5 px-5  outline-none transition-all placeholder:text-gray-300`;
+  return (
+    <div>
+      <label className="block text-xs font-semibold  uppercase tracking-wide ml-1 mb-2">
+        {label}
+      </label>
+      <input
+        type={type}
+        className={stil}
+        value={state || ""}
+        onChange={(e) => {
+          setState?.(e.target.value);
+        }}
+      />
+    </div>
+  );
+}
+
+export { InputDark };

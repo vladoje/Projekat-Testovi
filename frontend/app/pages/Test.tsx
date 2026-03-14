@@ -8,11 +8,12 @@ import { useRjesenja } from "~/store";
 import { useTestStore } from "~/testStore";
 import Spinner from "~/components/Spinner";
 import { useLocation } from "react-router";
+import { useDarkMode } from "~/context/DarkModeContext";
 
 function Test() {
   const location = useLocation();
   const cat = location.pathname.split("/").at(3) || "";
-
+  const { isDarkMode } = useDarkMode();
   const { i, setI, answers, setAnswers, handleNext, handleSelect } = useTest();
   const { trenutnoPitanje, loading } = useTestData(i);
   const pitanja = useTestStore().pitanja;
@@ -20,7 +21,9 @@ function Test() {
   const ukiniJedan = useRjesenja().oduzmi;
   if (loading) return <Spinner />;
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div
+      className={`min-h-screen ${!isDarkMode ? " bg-background text-text border-border" : "bg-background-dark text-text-dark border-border-dark"}`}
+    >
       <Header />
 
       <Kockice
@@ -31,20 +34,22 @@ function Test() {
         pitanja={pitanja}
       />
 
-      <main className="max-w-md mx-auto px-6 py-8">
+      <main className="max-w-md mx-auto px-6 pb-8">
         {/* PITANJE */}
         <div className="mb-8">
-          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500">
+          <span className="text-[12px] font-black uppercase tracking-[0.2em]">
             Pitanje {i} od {pitanja?.length}
           </span>
-          <h1 className="text-xl font-bold text-slate-800 dark:text-white mt-2 leading-snug">
+          <h1 className="text-xl font-bold  mt-2 leading-snug">
             {trenutnoPitanje?.question_text}
           </h1>
         </div>
         {(trenutnoPitanje?.type === "znak" ||
           trenutnoPitanje?.type === "raskrsnica") && (
           <div className="mb-8">
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm p-4 flex justify-center">
+            <div
+              className={` border-2 ${!isDarkMode ? "bg-surface" : "bg-surface-dark"}  rounded-3xl shadow-sm p-4 flex justify-center`}
+            >
               <img
                 src={`/pitanja-slike/${trenutnoPitanje.question_id}.webp`}
                 alt="Slika pitanja"
@@ -88,10 +93,11 @@ function NextButton({
   handleNext: () => void;
   pitanja: pitanje[];
 }) {
+  const { isDarkMode } = useDarkMode();
   return (
     <button
       onClick={handleNext} // Uvijek ista funkcija, ona unutra zna šta treba
-      className="flex-2 rounded-2xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg active:scale-95 transition-all"
+      className={`flex-2 rounded-2xl font-bold text-text-dark ${!isDarkMode ? "bg-primary hover:bg-primary/25" : "bg-primary-dark hover:bg-primary-dark/25"}   shadow-lg active:scale-95 transition-all`}
     >
       <div className="w-full h-full flex items-center justify-center gap-2 py-4">
         {i >= pitanja?.length ? "Završi test" : "Dalje"}
@@ -111,6 +117,7 @@ function NazadButton({
   ukiniJedan: Function;
   i: number;
 }) {
+  const { isDarkMode } = useDarkMode();
   return (
     <button
       disabled={i <= 1}
@@ -119,7 +126,7 @@ function NazadButton({
         setI(i - 1);
         ukiniJedan();
       }}
-      className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-bold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 disabled:opacity-30 active:scale-95 transition-all"
+      className={`flex-1 ${!isDarkMode ? "bg-secondary/50" : "bg-secondary-dark/25"} text-text-dark flex items-center justify-center gap-2 py-4 rounded-2xl font-bold    disabled:opacity-30 active:scale-95 transition-all`}
     >
       <FaChevronLeft size={14} /> Nazad
     </button>

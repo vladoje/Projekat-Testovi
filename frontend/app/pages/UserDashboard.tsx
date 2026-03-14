@@ -1,7 +1,5 @@
 /*
 znakovi i raskrsnice nisu ujednacene velicine
-ljepsi UI night mode da ne skace stranica dok odgovaras 
-definitivno ljepsi UI za napredak
 
 readme.md
 
@@ -13,12 +11,13 @@ import Header from "~/components/Header";
 import { lekcije } from "~/data";
 import { useMe } from "~/helpers/useMe";
 import Spinner from "~/components/Spinner";
+import { useDarkMode } from "~/context/DarkModeContext";
 
 export default function UserDashboard() {
   const { loading } = useMe();
 
   const user = useUser.getState().user || { category: "", username: "" };
-
+  const { isDarkMode } = useDarkMode();
   const categoryMap: Record<string, string> = {
     A: "Motocikli",
     B: "Automobil",
@@ -34,13 +33,14 @@ export default function UserDashboard() {
   if (loading) return <Spinner />;
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-700">
+    <div
+      className={`min-h-screen ${!isDarkMode ? " bg-background text-text border-border" : "bg-background-dark text-text-dark border-border-dark"}`}
+    >
       <Header />
 
       <main className="p-6 max-w-7xl mx-auto">
-        <h1 className="text-3xl font-extrabold text-gray-800">
-          Dobrodošao nazad,{" "}
-          <span className="text-indigo-600">{user.username}</span>!
+        <h1 className={`text-3xl font-extrabold  `}>
+          Dobrodošao nazad, {user.username}!
         </h1>
 
         {/* SEKCIJA KATEGORIJE */}
@@ -51,18 +51,18 @@ export default function UserDashboard() {
               <Link
                 key={i}
                 to={`/categorija/${cat}`}
-                className="flex-none w-64 p-5 bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg transition-all duration-200"
+                className={`flex-none w-64 p-5 ${!isDarkMode ? "bg-surface" : "bg-surface-dark"} border-2  rounded-xl shadow hover:shadow-lg transition-all duration-200`}
               >
-                <h3 className="font-bold text-gray-800">{cat} kategorija</h3>
-                <p className="text-sm text-gray-500 mt-1">{opis[i]}</p>
+                <h3 className="font-bold  text-xl">{cat} kategorija</h3>
+                <p className="text-sm  mt-1">{opis[i]}</p>
               </Link>
             ))}
             <Link
               to={`/categorija/P`}
-              className="flex-none w-64 p-5 bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg transition-all duration-200"
+              className={`flex-none w-64 p-5 ${!isDarkMode ? "bg-surface" : "bg-surface-dark"} border-2  rounded-xl shadow hover:shadow-lg transition-all duration-200`}
             >
-              <h3 className="font-bold text-gray-800">Prva pomoć</h3>
-              <p className="text-sm text-gray-500 mt-1">Prva pomoć</p>
+              <h3 className="font-bold text-xl">Prva pomoć</h3>
+              <p className="text-sm  mt-1">Prva pomoć</p>
             </Link>
           </div>
         </section>
@@ -76,14 +76,10 @@ export default function UserDashboard() {
               <Link
                 key={i}
                 to={`/lekcija/${lekcija.label.at(0)}`}
-                className="flex-none w-72 p-6 bg-white border border-gray-200 rounded-2xl shadow hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all duration-200 snap-center"
+                className={`flex-none w-72 p-6  ${!isDarkMode ? "bg-surface" : "bg-surface-dark"} border-2  rounded-2xl shadow hover:shadow-lg transform hover:-translate-y-1 active:scale-95 transition-all duration-200 snap-center`}
               >
-                <h3 className="text-xl font-bold text-gray-800">
-                  {lekcija.label}
-                </h3>
-                <p className="text-sm text-gray-500 mt-2 leading-relaxed">
-                  {lekcija.opis}
-                </p>
+                <h3 className="text-xl font-bold">{lekcija.label}</h3>
+                <p className="text-sm  mt-2 leading-relaxed">{lekcija.opis}</p>
               </Link>
             ))}
           </div>

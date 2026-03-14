@@ -9,6 +9,7 @@ import { SelectCategory } from "~/components/RegisterHelpers";
 import Input from "~/components/Input";
 import { UserAvatar } from "~/components/UserAvatar";
 import { ProfileActions, Window } from "~/components/ProfileActions";
+import { useDarkMode } from "~/context/DarkModeContext";
 
 function UserProfile() {
   const { loading } = useMe();
@@ -22,11 +23,14 @@ function UserProfile() {
     handleLogout,
     toggleCategory,
   } = useProfile();
+  const { isDarkMode } = useDarkMode();
 
   if (loading) return <Spinner />;
   return (
     <Modal>
-      <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f172a] pb-10">
+      <div
+        className={`min-h-screen ${!isDarkMode ? "bg-background text-text border-border" : "bg-background-dark text-text-dark border-border-dark"} pb-10`}
+      >
         <Header />
 
         <main className="max-w-md mx-auto px-6 pt-10">
@@ -36,15 +40,16 @@ function UserProfile() {
           {/* FORMA ZA PODATKE */}
           <div className="space-y-4">
             {/* KORISNIČKO IME */}
-            <div className="group">
+            <div className={`group `}>
               <Input
                 label={
-                  <p className="flex items-center gap-2">
+                  <p className={`flex items-center gap-2`}>
                     <FaUser size={10} />
                     <span>Korisničko ime</span>
                   </p>
                 }
                 state={username}
+                defaultValue={user.username}
                 setState={setUsername}
               />
             </div>
@@ -54,13 +59,14 @@ function UserProfile() {
               <SelectCategory
                 toggleCategory={toggleCategory}
                 categories={category}
+                user={user}
               />
             </div>
 
             {/* DUGME ZA SPAŠAVANJE */}
             <button
               onClick={handleClick}
-              className="w-full mt-4 bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 dark:hover:bg-indigo-500 text-white font-bold py-4 rounded-2xl transition-all active:scale-[0.97] flex items-center justify-center gap-3 shadow-lg cursor-pointer"
+              className={`w-full mt-4 ${!isDarkMode ? "bg-primary" : "bg-primary-dark"} text-text-dark  hover:bg-slate-800  font-bold py-4 rounded-2xl transition-all active:scale-[0.97] flex items-center justify-center gap-3 shadow-lg cursor-pointer`}
             >
               <FaSave /> Sačuvaj izmjene
             </button>

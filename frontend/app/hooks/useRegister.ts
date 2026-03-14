@@ -1,7 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
-import { useUser } from "~/userStore";
+import { useUser, type User } from "~/userStore";
 const CATEGORY_ORDER = ["A", "B", "C", "D", "T"] as const;
 export function isValidEmail(email: string) {
   if (email.length > 100) return false;

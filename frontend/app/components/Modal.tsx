@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { HiXMark } from "react-icons/hi2";
 import { ModalContext, type ModalContextType } from "../context/ModalContext";
 import { useOutsideClick } from "../hooks/useModal";
+import { useDarkMode } from "~/context/DarkModeContext";
 
 // Props tipovi
 interface ModalProps {
@@ -68,18 +69,20 @@ function Window({ name, children }: WindowProps) {
 
   const { openName, close } = context;
   const ref = useOutsideClick<HTMLDivElement>(close);
-
+  const { isDarkMode } = useDarkMode();
   if (name !== openName) return null;
 
   return createPortal(
-    <div className="fixed top-0 left-0 w-full h-screen bg-black/30 backdrop-blur-sm z-1000 transition-all duration-500">
+    <div
+      className={`fixed top-0 left-0 w-full h-screen ${!isDarkMode ? "text-text" : "text-text-dark"} bg-black/30 backdrop-blur-sm z-1000 transition-all duration-500`}
+    >
       <div
         ref={ref}
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-xl p-8 transition-all duration-500 w-[95%] max-w-lg"
+        className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${!isDarkMode ? "bg-background" : "bg-background-dark"} rounded-2xl shadow-xl p-8 transition-all duration-500 w-[95%] max-w-lg`}
       >
         <button
           onClick={close}
-          className="absolute top-4 right-4 p-1 rounded-md text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all"
+          className={`absolute top-4 right-4 p-1 rounded-md  hover:bg-gray-100 hover:text-gray-600 transition-all `}
         >
           <HiXMark className="w-6 h-6" />
         </button>

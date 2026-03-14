@@ -8,6 +8,7 @@ import {
   SearchProgress,
   SelectOrder,
 } from "~/components/ProgressFilters";
+import { useDarkMode } from "~/context/DarkModeContext";
 
 function UserProgress() {
   const { loading } = useMe();
@@ -28,11 +29,13 @@ function UserProgress() {
     hasMore,
     filteredQuestions,
   } = useProgress();
-
+  const { isDarkMode } = useDarkMode();
   if (loading || isPending) return <Spinner />;
   if (isError) return <div>Error loading questions</div>;
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div
+      className={`min-h-screen ${!isDarkMode ? " bg-background text-text border-border" : "bg-background-dark text-text-dark border-border-dark"}`}
+    >
       <Header />
       {/* Header Placeholder */}
 
@@ -55,7 +58,7 @@ function UserProgress() {
           sortDir={sortDir}
         />
         {/* Results Count */}
-        <div className="mb-3 text-sm text-gray-600">
+        <div className="mb-3 text-sm ">
           {filteredQuestions?.length}{" "}
           {filteredQuestions?.length === 1 ? "pitanje" : "pitanja"}
         </div>
@@ -63,7 +66,7 @@ function UserProgress() {
         {/* Question List */}
         <div>
           {visibleQuestions?.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
+            <div className="text-center py-12 ">
               <p>Nema pronađenih pitanja</p>
             </div>
           ) : (
@@ -79,7 +82,13 @@ function UserProgress() {
               {hasMore && (
                 <button
                   onClick={() => setVisibleCount((prev) => prev + 5)}
-                  className="w-full py-3 mt-2 bg-white text-blue-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  className={`
+  w-full py-3 mt-2 text-text-dark
+                  ${!isDarkMode ? "bg-primary border-border hover:bg-primary/25" : "bg-primary-dark border-border-dark hover:bg-primary-dark/50"}
+  border
+  rounded-lg
+  transition-colors
+`}
                 >
                   Učitaj još ({filteredQuestions?.length - visibleCount}{" "}
                   preostalo)

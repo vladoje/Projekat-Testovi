@@ -1,3 +1,4 @@
+import { useDarkMode } from "~/context/DarkModeContext";
 import { OptionCard } from "./OptionCard";
 interface pitanje {
   question_id: number;
@@ -21,9 +22,11 @@ function Izaberi({
   answers: string[];
   setAnswers?: Function;
 }) {
+  const { isDarkMode } = useDarkMode();
   return (
     <div className="space-y-3">
       <OptionCard
+        isDarkMode={isDarkMode}
         label="A"
         text={trenutnoPitanje?.answer_1_text || ""}
         checked={answers.includes("a")}
@@ -35,6 +38,7 @@ function Izaberi({
         }
       />
       <OptionCard
+        isDarkMode={isDarkMode}
         label="B"
         text={trenutnoPitanje?.answer_2_text || ""}
         checked={answers.includes("b")}
@@ -47,6 +51,7 @@ function Izaberi({
       />
       {trenutnoPitanje?.answer_3_text && (
         <OptionCard
+          isDarkMode={isDarkMode}
           label="C"
           text={trenutnoPitanje.answer_3_text}
           checked={answers.includes("c")}
@@ -60,6 +65,7 @@ function Izaberi({
       )}
       {trenutnoPitanje?.answer_4_text && (
         <OptionCard
+          isDarkMode={isDarkMode}
           label="D"
           text={trenutnoPitanje.answer_4_text}
           checked={answers.includes("d")}
@@ -73,6 +79,7 @@ function Izaberi({
       )}
       {trenutnoPitanje?.answer_5_text && (
         <OptionCard
+          isDarkMode={isDarkMode}
           label="E"
           text={trenutnoPitanje.answer_5_text}
           checked={answers.includes("e")}
